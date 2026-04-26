@@ -1372,7 +1372,7 @@ export default function Portfolio() {
             <Reveal delay={200}>
               <div className="hero-visual">
                 <img
-                  src="/profile.png"
+                  src="/profile2.png"
                   alt="Faisal Ali"
                   style={{
                     width: "100%",
