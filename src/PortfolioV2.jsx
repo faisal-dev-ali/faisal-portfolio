@@ -17,16 +17,16 @@ const EDUCATION = [
   {
     degree: "B.E. Computer Science",
     school: "Rajiv Gandhi Proudyogiki Vishwavidyalaya (RGPV)",
-    details: ["Solved 350+ DSA problems on LeetCode and GeeksforGeeks"],
+    details: [
+      "Shipped Java / Spring Boot / REST API projects",
+      "Hands‑on with production‑style backend patterns",
+    ],
     period: "2016 – 2020",
   },
   {
     degree: "Full Stack Java Program",
     school: "Geekster",
-    details: [
-      "Shipped Java / Spring Boot / REST API projects",
-      "Hands‑on with production‑style backend patterns",
-    ],
+    details: ["Solved 350+ DSA problems on LeetCode and GeeksforGeeks"],
     period: "Oct 2022 – Mar 2023",
   },
 ];
