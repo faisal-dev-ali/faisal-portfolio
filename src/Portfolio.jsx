@@ -638,7 +638,7 @@ body { overflow-x: hidden; }
           }}
         >
           <img
-            src="/src/assets/profile.png"
+            src="/profile.png"
             alt="Faisal Ali"
             style={{
               width: "clamp(140px, 20vw, 200px)",
