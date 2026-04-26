@@ -1198,7 +1198,7 @@ export default function Portfolio() {
           }}
           onClick={() => scrollTo("About")}
         >
-          fa.
+          faisal.dev
         </span>
 
         <div className="nav-desktop">
