@@ -289,6 +289,25 @@ export default function Portfolio() {
   }
 }
 
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero img {
+    margin-top: 1.5rem;
+  }
+}
+
 .nav-item::after {
   content: "";
   display: block;
@@ -447,6 +466,7 @@ body { overflow-x: hidden; }
       {/* ── HERO ── */}
       <section
         id="About"
+        className="hero"
         style={{
           minHeight: "100vh",
           display: "flex",
@@ -456,7 +476,6 @@ body { overflow-x: hidden; }
           margin: "0 auto",
           padding: "7rem 2rem 4rem",
           gap: "3rem",
-          flexWrap: "wrap",
         }}
       >
         {/* LEFT */}
@@ -631,22 +650,25 @@ body { overflow-x: hidden; }
         {/* RIGHT IMAGE */}
         <div
           style={{
-            flexShrink: 0,
+            flex: 1,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            marginTop: "2.5rem",
           }}
         >
           <img
             src="/profile.png"
             alt="Faisal Ali"
             style={{
-              width: "clamp(140px, 20vw, 200px)",
-              height: "clamp(140px, 20vw, 200px)",
+              width: "clamp(140px, 40vw, 200px)",
+              height: "clamp(140px, 40vw, 200px)",
               borderRadius: "50%",
               objectFit: "cover",
               border: "3px solid rgba(234,179,8,0.4)",
               boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
+              display: "block",
+              margin: "0 auto",
             }}
           />
         </div>
