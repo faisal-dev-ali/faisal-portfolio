@@ -167,265 +167,373 @@ const THINKING = [
 ];
 
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS (all design changes centralised here)
-───────────────────────────────────────────── */
-const T = {
-  gold: "#e8b84b",
-  goldDim: "rgba(232,184,75,0.12)",
-  goldBorder: "rgba(232,184,75,0.28)",
-  goldHover: "#f5cc6b",
-  bg: "#090e1a",
-  bgCard: "rgba(255,255,255,0.028)",
-  bgCardHover: "rgba(255,255,255,0.045)",
-  border: "rgba(255,255,255,0.075)",
-  borderHover: "rgba(255,255,255,0.14)",
-  textPrimary: "#eef2f7",
-  textSecondary: "#8b98ae",
-  textMuted: "#4e5a6e",
-  green: "#4ade80",
-  mono: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
-  serif: "'Playfair Display', Georgia, serif",
-  sans: "'DM Sans', 'Inter', 'Helvetica Neue', sans-serif",
-  radius: "10px",
-  radiusSm: "6px",
-  shadow: "0 4px 24px rgba(0,0,0,0.45)",
-  shadowCard: "0 2px 16px rgba(0,0,0,0.35)",
-};
-
-/* ─────────────────────────────────────────────
-   GLOBAL STYLES — injected once
+   GLOBAL CSS
 ───────────────────────────────────────────── */
 const GLOBAL_CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-  body { background: ${T.bg}; color: ${T.textPrimary}; font-family: ${T.sans}; overflow-x: hidden; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+  :root {
+    /* Light theme */
+    --bg: #f8f8f5;
+    --bg-card: #ffffff;
+    --bg-card-hover: #fafaf8;
+    --bg-subtle: #f1f1ec;
+    --text-primary: #111110;
+    --text-secondary: #52524e;
+    --text-muted: #a09f9a;
+    --border: rgba(0,0,0,0.07);
+    --border-strong: rgba(0,0,0,0.12);
+    --accent: #1a1a18;
+    --accent-soft: rgba(26,26,24,0.06);
+    --accent-border: rgba(26,26,24,0.15);
+    --highlight: #2563eb;
+    --highlight-soft: rgba(37,99,235,0.08);
+    --highlight-border: rgba(37,99,235,0.2);
+    --green: #16803c;
+    --green-soft: rgba(22,128,60,0.08);
+    --green-border: rgba(22,128,60,0.2);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --radius-lg: 16px;
+    --nav-bg: rgba(248,248,245,0.92);
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-serif: 'Lora', serif;
+    --font-body: 'Syne', sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0e0e0c;
+    --bg-card: #161614;
+    --bg-card-hover: #1c1c19;
+    --bg-subtle: #131311;
+    --text-primary: #eeeee9;
+    --text-secondary: #9b9b94;
+    --text-muted: #5c5c56;
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.1);
+    --accent: #eeeee9;
+    --accent-soft: rgba(238,238,233,0.06);
+    --accent-border: rgba(238,238,233,0.12);
+    --highlight: #3b82f6;
+    --highlight-soft: rgba(59,130,246,0.1);
+    --highlight-border: rgba(59,130,246,0.22);
+    --green: #22c55e;
+    --green-soft: rgba(34,197,94,0.08);
+    --green-border: rgba(34,197,94,0.2);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.4);
+    --nav-bg: rgba(14,14,12,0.92);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
 
   /* ── scrollbar ── */
-  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(232,184,75,0.25); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
 
   /* ── selection ── */
-  ::selection { background: rgba(232,184,75,0.22); color: #fff; }
+  ::selection { background: var(--highlight-soft); color: var(--text-primary); }
 
-  /* ── typography scale ── */
-  .display { font-family: ${T.serif}; font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.02em; color: ${T.textPrimary}; }
-  .section-heading { font-family: ${T.serif}; font-size: clamp(1.75rem, 4vw, 2.6rem); font-weight: 700; line-height: 1.15; color: ${T.textPrimary}; }
-  .mono-label { font-family: ${T.mono}; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: ${T.gold}; }
-  .body-text { font-size: 0.9rem; color: ${T.textSecondary}; line-height: 1.85; }
+  /* ── typography ── */
+  .display {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+  }
 
-  /* ── nav items ── */
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--highlight);
+    font-weight: 500;
+  }
+
+  .body-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    font-weight: 400;
+  }
+
+  /* ── nav ── */
   .nav-link {
-    font-size: 0.82rem;
-    letter-spacing: 0.02em;
-    color: ${T.textMuted};
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
     cursor: pointer;
-    padding: 4px 0;
     position: relative;
-    transition: color 0.2s;
+    padding: 4px 0;
+    transition: color 0.18s ease;
     user-select: none;
   }
-  .nav-link:hover { color: ${T.textSecondary}; }
-  .nav-link.active { color: ${T.gold}; }
+
+  .nav-link:hover { color: var(--text-secondary); }
+
+  .nav-link.active {
+    color: var(--text-primary);
+  }
+
   .nav-link::after {
     content: '';
     position: absolute;
-    bottom: -2px; left: 0;
-    height: 1.5px;
+    bottom: 0;
+    left: 0;
+    height: 1px;
     width: 0;
-    background: ${T.gold};
-    transition: width 0.25s ease;
-    border-radius: 1px;
+    background: var(--text-primary);
+    transition: width 0.22s ease;
   }
+
   .nav-link.active::after { width: 100%; }
 
   /* ── buttons ── */
   .btn-primary {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 22px;
-    background: ${T.gold};
-    color: #08100f;
-    border-radius: ${T.radiusSm};
-    font-weight: 700;
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
-    box-shadow: 0 2px 12px rgba(232,184,75,0.22);
-    white-space: nowrap;
-  }
-  .btn-primary:hover {
-    background: ${T.goldHover};
-    transform: translateY(-1px);
-    box-shadow: 0 4px 18px rgba(232,184,75,0.35);
-  }
-  .btn-primary:active { transform: translateY(0); }
-
-  .btn-outline-gold {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 22px;
-    border: 1.5px solid ${T.goldBorder};
-    color: ${T.gold};
-    border-radius: ${T.radiusSm};
+    padding: 10px 24px;
+    background: var(--text-primary);
+    color: var(--bg);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
     font-weight: 500;
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
     text-decoration: none;
-    transition: border-color 0.18s, background 0.18s, transform 0.15s;
-    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--text-primary);
+    cursor: pointer;
+    transition: all 0.18s ease;
   }
-  .btn-outline-gold:hover {
-    border-color: ${T.gold};
-    background: ${T.goldDim};
+
+  .btn-primary:hover {
+    opacity: 0.88;
     transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
   }
+
+  .btn-primary:active { transform: translateY(0); opacity: 1; }
 
   .btn-ghost {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 18px;
-    border: 1px solid ${T.border};
-    color: ${T.textSecondary};
-    border-radius: ${T.radiusSm};
-    font-size: 0.8rem;
+    padding: 10px 20px;
+    border: 1px solid var(--border-strong);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
     text-decoration: none;
-    transition: border-color 0.18s, color 0.18s, transform 0.15s;
-    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.18s ease;
   }
+
   .btn-ghost:hover {
-    border-color: ${T.borderHover};
-    color: ${T.textPrimary};
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+    background: var(--bg-subtle);
     transform: translateY(-1px);
   }
+
+  .btn-ghost:active { transform: translateY(0); }
 
   /* ── cards ── */
   .card {
-    background: ${T.bgCard};
-    border: 1px solid ${T.border};
-    border-radius: ${T.radius};
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
+
   .card:hover {
-    border-color: ${T.borderHover};
-    background: ${T.bgCardHover};
-    box-shadow: ${T.shadowCard};
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
   }
 
   /* ── skill pill ── */
   .skill-pill {
-    font-size: 0.78rem;
-    color: #b4c0d4;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 3px 10px;
-    transition: background 0.18s, color 0.18s, border-color 0.18s;
-    cursor: default;
+    transition: all 0.15s ease;
+    letter-spacing: 0.02em;
   }
+
   .skill-pill:hover {
-    background: rgba(232,184,75,0.1);
-    border-color: ${T.goldBorder};
-    color: ${T.gold};
+    color: var(--highlight);
+    border-color: var(--highlight-border);
+    background: var(--highlight-soft);
   }
 
-  /* ── project card ── */
-  .project-card {
-    border-radius: ${T.radius};
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .project-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.3); }
-
-  /* ── contact row ── */
+  /* ── contact ── */
   .contact-card {
+    padding: 1.1rem 1.4rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.1rem 1.5rem;
-    background: ${T.bgCard};
-    border: 1px solid ${T.border};
-    border-radius: ${T.radius};
-    transition: border-color 0.2s, background 0.2s;
-    gap: 1rem;
-  }
-  .contact-card:hover {
-    border-color: ${T.borderHover};
-    background: ${T.bgCardHover};
-  }
-  .contact-action {
-    font-size: 0.73rem;
-    color: ${T.textMuted};
-    border: 1px solid rgba(255,255,255,0.09);
-    padding: 5px 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: border-color 0.18s, color 0.18s, background 0.18s;
-    white-space: nowrap;
-  }
-  .contact-action:hover {
-    border-color: ${T.borderHover};
-    color: ${T.textSecondary};
-    background: rgba(255,255,255,0.04);
+    transition: border-color 0.18s, box-shadow 0.18s;
   }
 
-  /* ── experience grid ── */
+  .contact-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .contact-action {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border-strong);
+    padding: 6px 14px;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+
+  .contact-action:hover {
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+    background: var(--bg-subtle);
+  }
+
+  /* ── thinking ── */
+  .thinking-card {
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 1rem;
+    align-items: start;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+
+  .thinking-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── project-card ── */
+  .project-card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+
+  .project-card:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── section ── */
+  .section {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in { animation: fadeUp 0.5s ease forwards; }
+  .fade-in-delay { animation: fadeUp 0.5s 0.12s ease both; }
+  .fade-in-delay2 { animation: fadeUp 0.5s 0.24s ease both; }
+
+  /* ── experience row ── */
   .exp-row {
     display: grid;
-    grid-template-columns: minmax(130px, 155px) 1fr;
-    gap: 1.25rem;
-    font-size: 0.875rem;
-    line-height: 1.75;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    grid-template-columns: 130px 1fr;
+    gap: 1rem 1.5rem;
   }
 
-  /* ── thinking card ── */
-  .thinking-card {
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: ${T.bgCard};
-    border: 1px solid ${T.border};
-    border-radius: ${T.radius};
-    transition: border-color 0.2s, background 0.2s;
-    align-items: start;
-  }
-  .thinking-card:hover {
-    border-color: ${T.borderHover};
-    background: ${T.bgCardHover};
+  /* ── tag ── */
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    display: inline-block;
+    line-height: 1.5;
   }
 
-  /* ── fade in ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .tag-accent {
+    background: var(--highlight-soft);
+    color: var(--highlight);
+    border: 1px solid var(--highlight-border);
   }
-  .fade-in { animation: fadeUp 0.55s ease both; }
-  .fade-in-delay { animation: fadeUp 0.55s ease 0.12s both; }
-  .fade-in-delay2 { animation: fadeUp 0.55s ease 0.24s both; }
 
-  /* ── section spacing ── */
-  .section { max-width: 900px; margin: 0 auto; padding: 5.5rem 2rem; border-top: 1px solid rgba(255,255,255,0.055); }
+  .tag-neutral {
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
 
-  /* ── horizontal rule / divider ── */
-  .divider { height: 1px; background: rgba(255,255,255,0.07); margin: 0; }
+  /* ── divider ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+  }
 
-  /* ── RESPONSIVE ── */
+  /* ── nav desktop ── */
+  .nav-desktop { display: flex; }
+  .nav-mobile-btn { display: none; }
+
+  /* ── responsive ── */
   @media (max-width: 768px) {
-    .section { padding: 4rem 1.25rem; }
-    .exp-row { grid-template-columns: 1fr; gap: 2px; }
-    .thinking-card { grid-template-columns: 24px 1fr; gap: 1rem; }
-    .contact-card { flex-direction: column; align-items: flex-start; }
-    .hero-inner { flex-direction: column-reverse !important; text-align: center; }
-    .hero-image-wrap { display: flex; justify-content: center; margin-bottom: 0.5rem; }
-    .hero-ctas { justify-content: center !important; }
-    .hero-stats { justify-content: center !important; }
-    .hero-about-box { text-align: left; }
-    .nav-desktop { display: none !important; }
-    .nav-mobile-btn { display: flex !important; }
-  }
-  @media (min-width: 769px) {
-    .nav-mobile-btn { display: none !important; }
-    .nav-desktop { display: flex !important; }
+    .nav-desktop { display: none; }
+    .nav-mobile-btn { display: block; }
+    .section { padding: 3.5rem 1.25rem; }
+    .contact-card { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .hero-inner { flex-direction: column-reverse; align-items: flex-start; gap: 2rem; }
+    .hero-image-wrap { align-self: center; }
+    .exp-row { grid-template-columns: 1fr; gap: 0.25rem; }
+    .hero-stats { gap: 1.5rem; }
   }
 `;
 
@@ -434,19 +542,7 @@ const GLOBAL_CSS = `
 ───────────────────────────────────────────── */
 function Tag({ children, accent }) {
   return (
-    <span
-      style={{
-        background: accent ? T.goldDim : "rgba(255,255,255,0.055)",
-        color: accent ? T.gold : T.textMuted,
-        border: `1px solid ${accent ? T.goldBorder : "rgba(255,255,255,0.09)"}`,
-        fontSize: "0.68rem",
-        fontFamily: T.mono,
-        letterSpacing: "0.05em",
-        padding: "3px 10px",
-        borderRadius: "4px",
-        display: "inline-block",
-      }}
-    >
+    <span className={`tag ${accent ? "tag-accent" : "tag-neutral"}`}>
       {children}
     </span>
   );
@@ -454,8 +550,25 @@ function Tag({ children, accent }) {
 
 function SectionLabel({ children }) {
   return (
-    <p className="mono-label" style={{ marginBottom: "0.6rem" }}>
+    <p className="mono-label" style={{ marginBottom: "0.75rem" }}>
       ↳ {children}
+    </p>
+  );
+}
+
+function BlockLabel({ children }) {
+  return (
+    <p
+      style={{
+        fontFamily: "var(--font-mono)",
+        color: "var(--text-muted)",
+        fontSize: "0.62rem",
+        textTransform: "uppercase",
+        letterSpacing: "0.12em",
+        marginBottom: "0.6rem",
+      }}
+    >
+      {children}
     </p>
   );
 }
@@ -463,18 +576,7 @@ function SectionLabel({ children }) {
 function ProjectBlock({ label, children }) {
   return (
     <div>
-      <p
-        style={{
-          fontFamily: T.mono,
-          color: T.textMuted,
-          fontSize: "0.66rem",
-          textTransform: "uppercase",
-          letterSpacing: "0.12em",
-          marginBottom: "0.5rem",
-        }}
-      >
-        {label}
-      </p>
+      <BlockLabel>{label}</BlockLabel>
       {children}
     </div>
   );
@@ -487,8 +589,9 @@ export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("About");
   const [openProject, setOpenProject] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState("light");
 
-  /* inject global CSS once */
+  /* inject styles & fonts once */
   useEffect(() => {
     const id = "portfolio-global-styles";
     if (!document.getElementById(id)) {
@@ -497,19 +600,12 @@ export default function Portfolio() {
       el.textContent = GLOBAL_CSS;
       document.head.appendChild(el);
     }
-    /* Google Fonts */
-    const fonts = [
-      "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
-    ];
-    fonts.forEach((href) => {
-      if (!document.querySelector(`link[href="${href}"]`)) {
-        const l = document.createElement("link");
-        l.rel = "stylesheet";
-        l.href = href;
-        document.head.appendChild(l);
-      }
-    });
   }, []);
+
+  /* apply theme to html element */
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   /* active section tracking */
   useEffect(() => {
@@ -519,7 +615,7 @@ export default function Portfolio() {
       sections.forEach((section) => {
         if (!section) return;
         const rect = section.getBoundingClientRect();
-        if (rect.top <= 100 && rect.bottom >= 100) current = section.id;
+        if (rect.top <= 120 && rect.bottom >= 120) current = section.id;
       });
       setActiveSection(current);
     };
@@ -533,14 +629,13 @@ export default function Portfolio() {
     setMenuOpen(false);
   };
 
-  /* ── RENDER ── */
   return (
     <div
       style={{
-        background: T.bg,
-        color: T.textPrimary,
+        background: "var(--bg)",
+        color: "var(--text-primary)",
         minHeight: "100vh",
-        fontFamily: T.sans,
+        fontFamily: "var(--font-body)",
       }}
     >
       {/* ════════════════ NAV ════════════════ */}
@@ -551,12 +646,12 @@ export default function Portfolio() {
           left: 0,
           right: 0,
           zIndex: 100,
-          background: "rgba(9,14,26,0.88)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(255,255,255,0.055)",
+          background: "var(--nav-bg)",
+          borderBottom: "1px solid var(--border)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
           padding: "0 2rem",
-          height: 56,
+          height: 52,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -565,10 +660,11 @@ export default function Portfolio() {
         {/* Logo */}
         <span
           style={{
-            fontFamily: T.mono,
-            color: T.gold,
-            fontSize: "0.82rem",
+            fontFamily: "var(--font-mono)",
+            color: "var(--text-primary)",
+            fontSize: "0.78rem",
             letterSpacing: "0.06em",
+            fontWeight: 500,
             userSelect: "none",
           }}
         >
@@ -591,23 +687,43 @@ export default function Portfolio() {
           ))}
         </div>
 
-        {/* Mobile burger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="nav-mobile-btn"
-          style={{
-            background: "none",
-            border: "none",
-            color: T.textSecondary,
-            cursor: "pointer",
-            fontSize: "1.25rem",
-            lineHeight: 1,
-            padding: "4px 6px",
-          }}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? "✕" : "☰"}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          {/* Theme toggle */}
+          <button
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            style={{
+              padding: "5px 10px",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid var(--border-strong)",
+              background: "transparent",
+              color: "var(--text-muted)",
+              cursor: "pointer",
+              fontSize: "0.75rem",
+              fontFamily: "var(--font-mono)",
+              transition: "all 0.15s ease",
+            }}
+            title="Toggle theme"
+          >
+            {theme === "light" ? "◐" : "○"}
+          </button>
+
+          {/* Mobile burger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="nav-mobile-btn"
+            style={{
+              background: "none",
+              border: "none",
+              color: "var(--text-secondary)",
+              cursor: "pointer",
+              fontSize: "1.1rem",
+              lineHeight: 1,
+              padding: "4px 6px",
+            }}
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile dropdown */}
@@ -615,16 +731,16 @@ export default function Portfolio() {
         <div
           style={{
             position: "fixed",
-            top: 56,
+            top: 52,
             left: 0,
             right: 0,
             zIndex: 99,
-            background: "#0d1425",
-            borderBottom: "1px solid rgba(255,255,255,0.07)",
-            padding: "1.25rem 2rem",
+            background: "var(--bg-card)",
+            borderBottom: "1px solid var(--border)",
+            padding: "1.5rem 2rem",
             display: "flex",
             flexDirection: "column",
-            gap: "1.1rem",
+            gap: "1.25rem",
           }}
         >
           {NAV.map((n) => (
@@ -632,7 +748,7 @@ export default function Portfolio() {
               key={n}
               className={`nav-link${activeSection === n ? " active" : ""}`}
               onClick={() => scrollTo(n)}
-              style={{ fontSize: "0.95rem" }}
+              style={{ fontSize: "0.9rem" }}
             >
               {n}
             </span>
@@ -644,33 +760,32 @@ export default function Portfolio() {
       <section
         id="About"
         style={{
-          maxWidth: 960,
+          maxWidth: 880,
           margin: "0 auto",
-          padding: "7rem 2rem 5rem",
-          paddingTop: "clamp(5rem, 12vh, 8rem)",
+          padding: "clamp(5rem, 12vh, 8rem) 2rem 5rem",
         }}
       >
-        {/* — top row: text + avatar — */}
+        {/* top row */}
         <div
           className="hero-inner"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: "3.5rem",
+            gap: "4rem",
           }}
         >
           {/* LEFT text */}
           <div className="fade-in" style={{ flex: 1, minWidth: 260 }}>
             <p
               className="mono-label fade-in"
-              style={{ marginBottom: "1.25rem" }}
+              style={{ marginBottom: "1.5rem" }}
             >
               ↳ Backend Engineer · Payment Systems · Idempotent &amp;
               Fault-Tolerant Design
             </p>
 
-            <h1 className="display fade-in" style={{ marginBottom: "1rem" }}>
+            <h1 className="display fade-in" style={{ marginBottom: "1.25rem" }}>
               Faisal Ali
             </h1>
 
@@ -680,15 +795,16 @@ export default function Portfolio() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "6px",
+                gap: "7px",
                 padding: "5px 14px",
-                fontSize: "0.7rem",
-                color: T.green,
-                border: "1px solid rgba(74,222,128,0.28)",
-                borderRadius: 20,
-                marginBottom: "1.5rem",
-                fontFamily: T.mono,
-                background: "rgba(74,222,128,0.06)",
+                fontSize: "0.68rem",
+                color: "var(--green)",
+                border: "1px solid var(--green-border)",
+                borderRadius: 99,
+                marginBottom: "1.75rem",
+                fontFamily: "var(--font-mono)",
+                background: "var(--green-soft)",
+                letterSpacing: "0.04em",
               }}
             >
               <span
@@ -696,8 +812,9 @@ export default function Portfolio() {
                   width: 6,
                   height: 6,
                   borderRadius: "50%",
-                  background: T.green,
+                  background: "var(--green)",
                   flexShrink: 0,
+                  boxShadow: "0 0 0 2px var(--green-soft)",
                 }}
               />
               Open to backend roles
@@ -706,11 +823,11 @@ export default function Portfolio() {
             <p
               className="fade-in-delay"
               style={{
-                fontSize: "1.05rem",
-                color: T.textSecondary,
-                maxWidth: 520,
+                fontSize: "1rem",
+                color: "var(--text-secondary)",
+                maxWidth: 500,
                 lineHeight: 1.75,
-                fontWeight: 300,
+                fontWeight: 400,
               }}
             >
               I build production backend systems for payments and travel
@@ -725,14 +842,10 @@ export default function Portfolio() {
                 marginTop: "2.5rem",
                 display: "flex",
                 flexDirection: "column",
-                gap: "0.85rem",
+                gap: "0.75rem",
               }}
             >
-              {/* Row 1 — primary */}
-              <div
-                className="hero-ctas"
-                style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}
-              >
+              <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
                 <a
                   href="/Faisal_Ali_Backend_Engineer.pdf"
                   target="_blank"
@@ -744,16 +857,12 @@ export default function Portfolio() {
                 <a
                   href="/Faisal_Ali_Backend_Engineer.pdf"
                   download
-                  className="btn-outline-gold"
+                  className="btn-primary"
                 >
                   Download ↓
                 </a>
               </div>
-              {/* Row 2 — secondary */}
-              <div
-                className="hero-ctas"
-                style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}
-              >
+              <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
                 <a href="mailto:faisal.dev.ali@gmail.com" className="btn-ghost">
                   Email
                 </a>
@@ -785,18 +894,16 @@ export default function Portfolio() {
             <div
               style={{
                 position: "relative",
-                width: "clamp(150px, 22vw, 210px)",
-                height: "clamp(150px, 22vw, 210px)",
+                width: "clamp(140px, 20vw, 196px)",
+                height: "clamp(140px, 20vw, 196px)",
               }}
             >
-              {/* gold ring */}
               <div
                 style={{
                   position: "absolute",
-                  inset: -4,
+                  inset: -3,
                   borderRadius: "50%",
-                  border: `2px solid ${T.goldBorder}`,
-                  boxShadow: `0 0 32px rgba(232,184,75,0.12)`,
+                  border: "1.5px solid var(--border-strong)",
                 }}
               />
               <img
@@ -808,22 +915,22 @@ export default function Portfolio() {
                   borderRadius: "50%",
                   objectFit: "cover",
                   display: "block",
-                  boxShadow: T.shadow,
+                  filter: "grayscale(8%)",
                 }}
               />
             </div>
           </div>
         </div>
 
-        {/* — stats bar — */}
+        {/* stats bar */}
         <div
           className="hero-stats fade-in-delay2"
           style={{
             display: "flex",
-            gap: "2.5rem",
+            gap: "0",
             marginTop: "4rem",
-            paddingTop: "2rem",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
+            paddingTop: "2.5rem",
+            borderTop: "1px solid var(--border)",
             flexWrap: "wrap",
           }}
         >
@@ -832,24 +939,35 @@ export default function Portfolio() {
             ["Java (Spring Boot)", "Core backend stack"],
             ["Travel & Rewards", "Customer platforms"],
             ["Kafka + Redis", "Event-driven · idempotency"],
-          ].map(([val, label]) => (
-            <div key={val} style={{ minWidth: 110 }}>
+          ].map(([val, label], i) => (
+            <div
+              key={val}
+              style={{
+                flex: "1 1 160px",
+                padding: "0 2rem 0 0",
+                borderRight: i < 3 ? "1px solid var(--border)" : "none",
+                marginRight: i < 3 ? "2rem" : 0,
+              }}
+            >
               <div
                 style={{
-                  fontFamily: T.serif,
-                  fontSize: "1.4rem",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "1.2rem",
                   fontWeight: 700,
-                  color: T.gold,
-                  lineHeight: 1.1,
+                  color: "var(--text-primary)",
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
                 }}
               >
                 {val}
               </div>
               <div
                 style={{
-                  fontSize: "0.72rem",
-                  color: T.textMuted,
-                  marginTop: 4,
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.68rem",
+                  color: "var(--text-muted)",
+                  marginTop: 5,
+                  letterSpacing: "0.03em",
                 }}
               >
                 {label}
@@ -858,25 +976,20 @@ export default function Portfolio() {
           ))}
         </div>
 
-        {/* — about text — */}
+        {/* about text */}
         <div
           className="hero-about-box fade-in-delay2"
           style={{
             marginTop: "2.5rem",
             padding: "1.75rem 2rem",
-            background: T.bgCard,
-            border: `1px solid ${T.border}`,
-            borderRadius: T.radius,
-            maxWidth: 720,
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderLeft: "3px solid var(--highlight)",
+            borderRadius: "0 var(--radius) var(--radius) 0",
+            maxWidth: 680,
           }}
         >
-          <p
-            style={{
-              color: T.textSecondary,
-              lineHeight: 1.9,
-              fontSize: "0.92rem",
-            }}
-          >
+          <p className="body-text">
             Most of what I've learned has come from production failures — a
             payment that got processed twice, a cache that silently evicted a
             budget counter, a partner API that started returning 500s at
@@ -902,17 +1015,27 @@ export default function Portfolio() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(245px, 1fr))",
-            gap: "1.25rem",
+            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+            gap: "1rem",
           }}
         >
           {SKILLS.map((group) => (
             <div
               key={group.label}
               className="card"
-              style={{ padding: "1.35rem 1.5rem" }}
+              style={{ padding: "1.25rem 1.4rem" }}
             >
-              <p className="mono-label" style={{ marginBottom: "0.85rem" }}>
+              <p
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                  marginBottom: "0.9rem",
+                  fontWeight: 500,
+                }}
+              >
                 {group.label}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
@@ -930,13 +1053,13 @@ export default function Portfolio() {
       {/* ════════════════ EXPERIENCE ════════════════ */}
       <section id="Experience" className="section">
         <SectionLabel>Work Experience</SectionLabel>
-        <h2 className="section-heading" style={{ marginBottom: "2.5rem" }}>
+        <h2 className="section-heading" style={{ marginBottom: "2.75rem" }}>
           Where I've built things
         </h2>
 
         <div
           style={{
-            borderLeft: `2px solid ${T.goldBorder}`,
+            borderLeft: "1.5px solid var(--border-strong)",
             paddingLeft: "2rem",
           }}
         >
@@ -946,12 +1069,13 @@ export default function Portfolio() {
               style={{
                 position: "absolute",
                 left: -35,
-                top: 8,
-                width: 10,
-                height: 10,
-                background: T.gold,
+                top: 10,
+                width: 9,
+                height: 9,
+                background: "var(--text-primary)",
                 borderRadius: "50%",
-                boxShadow: `0 0 10px rgba(232,184,75,0.35)`,
+                border: "2px solid var(--bg)",
+                boxShadow: "0 0 0 2px var(--text-primary)",
               }}
             />
 
@@ -961,22 +1085,30 @@ export default function Portfolio() {
                 alignItems: "flex-start",
                 justifyContent: "space-between",
                 flexWrap: "wrap",
-                gap: "0.5rem",
-                marginBottom: "1.75rem",
+                gap: "0.75rem",
+                marginBottom: "2rem",
               }}
             >
               <div>
                 <h3
                   style={{
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                    color: T.textPrimary,
-                    marginBottom: 4,
+                    fontFamily: "var(--font-display)",
+                    fontSize: "1.05rem",
+                    fontWeight: 700,
+                    color: "var(--text-primary)",
+                    marginBottom: 5,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   Software Engineer
                 </h3>
-                <p style={{ color: T.gold, fontSize: "0.84rem" }}>
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: "0.82rem",
+                    fontFamily: "var(--font-mono)",
+                  }}
+                >
                   R360 Global Services · Bangalore
                 </p>
               </div>
@@ -984,7 +1116,11 @@ export default function Portfolio() {
             </div>
 
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.1rem",
+              }}
             >
               {[
                 {
@@ -1016,10 +1152,11 @@ export default function Portfolio() {
                 <div key={area} className="exp-row">
                   <span
                     style={{
-                      fontFamily: T.mono,
-                      color: T.gold,
-                      fontSize: "0.72rem",
-                      paddingTop: 2,
+                      fontFamily: "var(--font-mono)",
+                      color: "var(--text-muted)",
+                      fontSize: "0.68rem",
+                      paddingTop: 3,
+                      letterSpacing: "0.02em",
                     }}
                   >
                     {area}
@@ -1039,7 +1176,9 @@ export default function Portfolio() {
           What I've actually built
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+        >
           {PROJECTS.map((p, i) => {
             const isOpen = openProject === i;
             return (
@@ -1047,16 +1186,17 @@ export default function Portfolio() {
                 key={p.title}
                 className="project-card"
                 style={{
-                  background: isOpen ? "rgba(232,184,75,0.035)" : T.bgCard,
-                  border: `1px solid ${isOpen ? T.goldBorder : T.border}`,
-                  overflow: "hidden",
+                  background: isOpen
+                    ? "var(--highlight-soft)"
+                    : "var(--bg-card)",
+                  border: `1px solid ${isOpen ? "var(--highlight-border)" : "var(--border)"}`,
                 }}
               >
                 {/* header */}
                 <div
                   onClick={() => setOpenProject(isOpen ? null : i)}
                   style={{
-                    padding: "1.4rem 1.5rem",
+                    padding: "1.35rem 1.5rem",
                     cursor: "pointer",
                     display: "flex",
                     justifyContent: "space-between",
@@ -1069,42 +1209,52 @@ export default function Portfolio() {
                     <div
                       style={{
                         display: "flex",
-                        gap: "0.5rem",
+                        gap: "0.4rem",
                         flexWrap: "wrap",
-                        marginBottom: "0.55rem",
+                        marginBottom: "0.6rem",
                       }}
                     >
                       <Tag accent>{p.tag}</Tag>
                     </div>
                     <h3
                       style={{
-                        fontSize: "1rem",
-                        fontWeight: 600,
-                        color: T.textPrimary,
-                        marginBottom: 3,
+                        fontFamily: "var(--font-display)",
+                        fontSize: "0.95rem",
+                        fontWeight: 700,
+                        color: "var(--text-primary)",
+                        marginBottom: 4,
+                        letterSpacing: "-0.01em",
                       }}
                     >
                       {p.title}
                     </h3>
-                    <p style={{ fontSize: "0.78rem", color: T.textMuted }}>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "0.72rem",
+                        color: "var(--text-muted)",
+                        letterSpacing: "0.02em",
+                      }}
+                    >
                       {p.subtitle}
                     </p>
                   </div>
                   <span
                     style={{
-                      color: T.gold,
-                      fontSize: "1.25rem",
+                      color: "var(--text-muted)",
+                      fontSize: "1.1rem",
                       flexShrink: 0,
                       lineHeight: 1,
-                      marginTop: 2,
+                      marginTop: 4,
                       fontWeight: 300,
+                      fontFamily: "var(--font-mono)",
                     }}
                   >
                     {isOpen ? "−" : "+"}
                   </span>
                 </div>
 
-                {/* expanded */}
+                {/* expanded content */}
                 {isOpen && (
                   <div
                     className="fade-in"
@@ -1128,13 +1278,13 @@ export default function Portfolio() {
                           style={{
                             marginTop: "1rem",
                             padding: "1rem 1.25rem",
-                            background: "rgba(255,255,255,0.028)",
-                            border: `1px solid ${T.border}`,
-                            borderRadius: T.radiusSm,
-                            fontFamily: T.mono,
-                            fontSize: "0.73rem",
-                            color: "#b4c0d4",
-                            lineHeight: 1.9,
+                            background: "var(--bg-subtle)",
+                            border: "1px solid var(--border)",
+                            borderRadius: "var(--radius-sm)",
+                            fontFamily: "var(--font-mono)",
+                            fontSize: "0.72rem",
+                            color: "var(--text-secondary)",
+                            lineHeight: 2,
                           }}
                         >
                           {p.diagram.map((line, idx) => (
@@ -1174,15 +1324,16 @@ export default function Portfolio() {
                               display: "flex",
                               gap: "0.75rem",
                               fontSize: "0.875rem",
-                              color: T.textSecondary,
+                              color: "var(--text-secondary)",
                               lineHeight: 1.75,
                             }}
                           >
                             <span
                               style={{
-                                color: T.gold,
+                                color: "var(--text-muted)",
                                 flexShrink: 0,
                                 marginTop: 3,
+                                fontFamily: "var(--font-mono)",
                               }}
                             >
                               →
@@ -1197,8 +1348,9 @@ export default function Portfolio() {
                       <p
                         style={{
                           fontSize: "0.875rem",
-                          color: T.green,
+                          color: "var(--green)",
                           lineHeight: 1.75,
+                          fontWeight: 500,
                         }}
                       >
                         {p.impact}
@@ -1223,16 +1375,18 @@ export default function Portfolio() {
           className="card"
           style={{
             padding: "1.75rem 2rem",
-            borderLeft: `3px solid ${T.gold}`,
-            borderRadius: T.radius,
+            borderLeft: "3px solid var(--highlight)",
+            borderRadius: "0 var(--radius) var(--radius) 0",
           }}
         >
           <h3
             style={{
-              color: T.textPrimary,
+              fontFamily: "var(--font-display)",
+              color: "var(--text-primary)",
               marginBottom: "1rem",
-              fontSize: "1.05rem",
-              fontWeight: 600,
+              fontSize: "1rem",
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
             }}
           >
             Duplicate Payment Issue
@@ -1262,11 +1416,18 @@ export default function Portfolio() {
                   display: "flex",
                   gap: "0.65rem",
                   fontSize: "0.875rem",
-                  color: T.textSecondary,
+                  color: "var(--text-secondary)",
                   lineHeight: 1.7,
                 }}
               >
-                <span style={{ color: T.gold, flexShrink: 0, marginTop: 3 }}>
+                <span
+                  style={{
+                    color: "var(--text-muted)",
+                    flexShrink: 0,
+                    marginTop: 3,
+                    fontFamily: "var(--font-mono)",
+                  }}
+                >
                   →
                 </span>
                 <span>{item}</span>
@@ -1274,17 +1435,28 @@ export default function Portfolio() {
             ))}
           </ul>
 
-          <p
+          <div
             style={{
-              marginTop: "1.25rem",
-              color: T.gold,
-              fontSize: "0.82rem",
-              fontFamily: T.mono,
-              letterSpacing: "0.03em",
+              marginTop: "1.5rem",
+              padding: "0.75rem 1rem",
+              background: "var(--green-soft)",
+              border: "1px solid var(--green-border)",
+              borderRadius: "var(--radius-sm)",
+              display: "inline-block",
             }}
           >
-            Result: Zero duplicate transactions across live production traffic
-          </p>
+            <p
+              style={{
+                color: "var(--green)",
+                fontSize: "0.78rem",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.04em",
+              }}
+            >
+              ✓ Result: Zero duplicate transactions across live production
+              traffic
+            </p>
+          </div>
         </div>
       </section>
 
@@ -1294,28 +1466,32 @@ export default function Portfolio() {
         <h2 className="section-heading">How I approach problems</h2>
         <p
           style={{
-            color: T.textMuted,
-            fontSize: "0.88rem",
+            color: "var(--text-muted)",
+            fontSize: "0.85rem",
             marginTop: "0.5rem",
             marginBottom: "2.5rem",
+            fontFamily: "var(--font-mono)",
+            letterSpacing: "0.02em",
           }}
         >
           These aren't rules I follow — they're patterns I've developed from
           getting things wrong in production.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+        >
           {THINKING.map((t, i) => (
             <div key={t.heading} className="thinking-card">
               <span
                 style={{
-                  fontFamily: T.mono,
-                  color: T.gold,
-                  fontSize: "0.72rem",
+                  fontFamily: "var(--font-mono)",
+                  color: "var(--text-muted)",
+                  fontSize: "0.65rem",
                   fontWeight: 500,
-                  opacity: 0.55,
-                  paddingTop: 3,
+                  paddingTop: 4,
                   userSelect: "none",
+                  opacity: 0.6,
                 }}
               >
                 0{i + 1}
@@ -1323,11 +1499,13 @@ export default function Portfolio() {
               <div>
                 <h4
                   style={{
-                    color: T.textPrimary,
-                    fontWeight: 600,
-                    fontSize: "0.95rem",
-                    marginBottom: "0.5rem",
+                    fontFamily: "var(--font-display)",
+                    color: "var(--text-primary)",
+                    fontWeight: 700,
+                    fontSize: "0.92rem",
+                    marginBottom: "0.55rem",
                     lineHeight: 1.4,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   {t.heading}
@@ -1350,17 +1528,19 @@ export default function Portfolio() {
 
         <p
           style={{
-            color: T.textMuted,
-            fontSize: "0.88rem",
+            color: "var(--text-muted)",
+            fontSize: "0.82rem",
             marginTop: "0.5rem",
             marginBottom: "2.5rem",
+            fontFamily: "var(--font-mono)",
+            letterSpacing: "0.03em",
           }}
         >
           Open to backend / distributed systems roles at product companies.
         </p>
 
         <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+          style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}
         >
           {[
             {
@@ -1392,12 +1572,12 @@ export default function Portfolio() {
               <div style={{ minWidth: 0 }}>
                 <div
                   style={{
-                    fontFamily: T.mono,
-                    color: T.textMuted,
-                    fontSize: "0.66rem",
+                    fontFamily: "var(--font-mono)",
+                    color: "var(--text-muted)",
+                    fontSize: "0.62rem",
                     textTransform: "uppercase",
                     letterSpacing: "0.12em",
-                    marginBottom: 5,
+                    marginBottom: 6,
                   }}
                 >
                   {label}
@@ -1407,14 +1587,20 @@ export default function Portfolio() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    color: T.gold,
-                    fontSize: "0.88rem",
+                    color: "var(--text-secondary)",
+                    fontSize: "0.875rem",
                     textDecoration: "none",
-                    transition: "color 0.18s",
                     wordBreak: "break-all",
+                    fontFamily: "var(--font-mono)",
+                    letterSpacing: "0.01em",
+                    transition: "color 0.15s ease",
                   }}
-                  onMouseEnter={(e) => (e.target.style.color = T.goldHover)}
-                  onMouseLeave={(e) => (e.target.style.color = T.gold)}
+                  onMouseEnter={(e) =>
+                    (e.target.style.color = "var(--highlight)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.color = "var(--text-secondary)")
+                  }
                 >
                   {value}
                 </a>
@@ -1437,11 +1623,11 @@ export default function Portfolio() {
         style={{
           textAlign: "center",
           padding: "1.5rem 2rem",
-          borderTop: "1px solid rgba(255,255,255,0.05)",
-          color: T.textMuted,
-          fontSize: "0.72rem",
-          fontFamily: T.mono,
-          letterSpacing: "0.05em",
+          borderTop: "1px solid var(--border)",
+          color: "var(--text-muted)",
+          fontSize: "0.68rem",
+          fontFamily: "var(--font-mono)",
+          letterSpacing: "0.06em",
         }}
       >
         faisal ali · backend engineer · bangalore · {new Date().getFullYear()}
