@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 
+/* ─────────────────────────────────────────────
+   DATA — UNCHANGED
+───────────────────────────────────────────── */
 const NAV = [
   "About",
   "Skills",
@@ -163,18 +166,284 @@ const THINKING = [
   },
 ];
 
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS (all design changes centralised here)
+───────────────────────────────────────────── */
+const T = {
+  gold: "#e8b84b",
+  goldDim: "rgba(232,184,75,0.12)",
+  goldBorder: "rgba(232,184,75,0.28)",
+  goldHover: "#f5cc6b",
+  bg: "#090e1a",
+  bgCard: "rgba(255,255,255,0.028)",
+  bgCardHover: "rgba(255,255,255,0.045)",
+  border: "rgba(255,255,255,0.075)",
+  borderHover: "rgba(255,255,255,0.14)",
+  textPrimary: "#eef2f7",
+  textSecondary: "#8b98ae",
+  textMuted: "#4e5a6e",
+  green: "#4ade80",
+  mono: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
+  serif: "'Playfair Display', Georgia, serif",
+  sans: "'DM Sans', 'Inter', 'Helvetica Neue', sans-serif",
+  radius: "10px",
+  radiusSm: "6px",
+  shadow: "0 4px 24px rgba(0,0,0,0.45)",
+  shadowCard: "0 2px 16px rgba(0,0,0,0.35)",
+};
+
+/* ─────────────────────────────────────────────
+   GLOBAL STYLES — injected once
+───────────────────────────────────────────── */
+const GLOBAL_CSS = `
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body { background: ${T.bg}; color: ${T.textPrimary}; font-family: ${T.sans}; overflow-x: hidden; }
+
+  /* ── scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(232,184,75,0.25); border-radius: 3px; }
+
+  /* ── selection ── */
+  ::selection { background: rgba(232,184,75,0.22); color: #fff; }
+
+  /* ── typography scale ── */
+  .display { font-family: ${T.serif}; font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.02em; color: ${T.textPrimary}; }
+  .section-heading { font-family: ${T.serif}; font-size: clamp(1.75rem, 4vw, 2.6rem); font-weight: 700; line-height: 1.15; color: ${T.textPrimary}; }
+  .mono-label { font-family: ${T.mono}; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: ${T.gold}; }
+  .body-text { font-size: 0.9rem; color: ${T.textSecondary}; line-height: 1.85; }
+
+  /* ── nav items ── */
+  .nav-link {
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    color: ${T.textMuted};
+    cursor: pointer;
+    padding: 4px 0;
+    position: relative;
+    transition: color 0.2s;
+    user-select: none;
+  }
+  .nav-link:hover { color: ${T.textSecondary}; }
+  .nav-link.active { color: ${T.gold}; }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    height: 1.5px;
+    width: 0;
+    background: ${T.gold};
+    transition: width 0.25s ease;
+    border-radius: 1px;
+  }
+  .nav-link.active::after { width: 100%; }
+
+  /* ── buttons ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px;
+    background: ${T.gold};
+    color: #08100f;
+    border-radius: ${T.radiusSm};
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+    box-shadow: 0 2px 12px rgba(232,184,75,0.22);
+    white-space: nowrap;
+  }
+  .btn-primary:hover {
+    background: ${T.goldHover};
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(232,184,75,0.35);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-outline-gold {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px;
+    border: 1.5px solid ${T.goldBorder};
+    color: ${T.gold};
+    border-radius: ${T.radiusSm};
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: border-color 0.18s, background 0.18s, transform 0.15s;
+    white-space: nowrap;
+  }
+  .btn-outline-gold:hover {
+    border-color: ${T.gold};
+    background: ${T.goldDim};
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    border: 1px solid ${T.border};
+    color: ${T.textSecondary};
+    border-radius: ${T.radiusSm};
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: border-color 0.18s, color 0.18s, transform 0.15s;
+    white-space: nowrap;
+  }
+  .btn-ghost:hover {
+    border-color: ${T.borderHover};
+    color: ${T.textPrimary};
+    transform: translateY(-1px);
+  }
+
+  /* ── cards ── */
+  .card {
+    background: ${T.bgCard};
+    border: 1px solid ${T.border};
+    border-radius: ${T.radius};
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    border-color: ${T.borderHover};
+    background: ${T.bgCardHover};
+    box-shadow: ${T.shadowCard};
+  }
+
+  /* ── skill pill ── */
+  .skill-pill {
+    font-size: 0.78rem;
+    color: #b4c0d4;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 3px 10px;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    cursor: default;
+  }
+  .skill-pill:hover {
+    background: rgba(232,184,75,0.1);
+    border-color: ${T.goldBorder};
+    color: ${T.gold};
+  }
+
+  /* ── project card ── */
+  .project-card {
+    border-radius: ${T.radius};
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .project-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.3); }
+
+  /* ── contact row ── */
+  .contact-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 1.5rem;
+    background: ${T.bgCard};
+    border: 1px solid ${T.border};
+    border-radius: ${T.radius};
+    transition: border-color 0.2s, background 0.2s;
+    gap: 1rem;
+  }
+  .contact-card:hover {
+    border-color: ${T.borderHover};
+    background: ${T.bgCardHover};
+  }
+  .contact-action {
+    font-size: 0.73rem;
+    color: ${T.textMuted};
+    border: 1px solid rgba(255,255,255,0.09);
+    padding: 5px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: border-color 0.18s, color 0.18s, background 0.18s;
+    white-space: nowrap;
+  }
+  .contact-action:hover {
+    border-color: ${T.borderHover};
+    color: ${T.textSecondary};
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* ── experience grid ── */
+  .exp-row {
+    display: grid;
+    grid-template-columns: minmax(130px, 155px) 1fr;
+    gap: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.75;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* ── thinking card ── */
+  .thinking-card {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: ${T.bgCard};
+    border: 1px solid ${T.border};
+    border-radius: ${T.radius};
+    transition: border-color 0.2s, background 0.2s;
+    align-items: start;
+  }
+  .thinking-card:hover {
+    border-color: ${T.borderHover};
+    background: ${T.bgCardHover};
+  }
+
+  /* ── fade in ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeUp 0.55s ease both; }
+  .fade-in-delay { animation: fadeUp 0.55s ease 0.12s both; }
+  .fade-in-delay2 { animation: fadeUp 0.55s ease 0.24s both; }
+
+  /* ── section spacing ── */
+  .section { max-width: 900px; margin: 0 auto; padding: 5.5rem 2rem; border-top: 1px solid rgba(255,255,255,0.055); }
+
+  /* ── horizontal rule / divider ── */
+  .divider { height: 1px; background: rgba(255,255,255,0.07); margin: 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .section { padding: 4rem 1.25rem; }
+    .exp-row { grid-template-columns: 1fr; gap: 2px; }
+    .thinking-card { grid-template-columns: 24px 1fr; gap: 1rem; }
+    .contact-card { flex-direction: column; align-items: flex-start; }
+    .hero-inner { flex-direction: column-reverse !important; text-align: center; }
+    .hero-image-wrap { display: flex; justify-content: center; margin-bottom: 0.5rem; }
+    .hero-ctas { justify-content: center !important; }
+    .hero-stats { justify-content: center !important; }
+    .hero-about-box { text-align: left; }
+    .nav-desktop { display: none !important; }
+    .nav-mobile-btn { display: flex !important; }
+  }
+  @media (min-width: 769px) {
+    .nav-mobile-btn { display: none !important; }
+    .nav-desktop { display: flex !important; }
+  }
+`;
+
+/* ─────────────────────────────────────────────
+   SUB-COMPONENTS
+───────────────────────────────────────────── */
 function Tag({ children, accent }) {
   return (
     <span
       style={{
-        background: accent ? "rgba(234,179,8,0.12)" : "rgba(255,255,255,0.07)",
-        color: accent ? "#eab308" : "#94a3b8",
-        border: `1px solid ${accent ? "rgba(234,179,8,0.3)" : "rgba(255,255,255,0.1)"}`,
-        fontSize: "0.7rem",
-        fontFamily: "'JetBrains Mono', 'Fira Mono', monospace",
-        letterSpacing: "0.04em",
-        padding: "2px 10px",
-        borderRadius: "3px",
+        background: accent ? T.goldDim : "rgba(255,255,255,0.055)",
+        color: accent ? T.gold : T.textMuted,
+        border: `1px solid ${accent ? T.goldBorder : "rgba(255,255,255,0.09)"}`,
+        fontSize: "0.68rem",
+        fontFamily: T.mono,
+        letterSpacing: "0.05em",
+        padding: "3px 10px",
+        borderRadius: "4px",
         display: "inline-block",
       }}
     >
@@ -183,26 +452,80 @@ function Tag({ children, accent }) {
   );
 }
 
-function NavDot({ active }) {
+function SectionLabel({ children }) {
   return (
-    <span
-      style={{
-        display: "inline-block",
-        width: active ? 20 : 8,
-        height: 2,
-        background: active ? "#eab308" : "rgba(255,255,255,0.25)",
-        borderRadius: 2,
-        transition: "all 0.3s ease",
-        marginLeft: 4,
-      }}
-    />
+    <p className="mono-label" style={{ marginBottom: "0.6rem" }}>
+      ↳ {children}
+    </p>
   );
 }
 
+function ProjectBlock({ label, children }) {
+  return (
+    <div>
+      <p
+        style={{
+          fontFamily: T.mono,
+          color: T.textMuted,
+          fontSize: "0.66rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          marginBottom: "0.5rem",
+        }}
+      >
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────── */
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("About");
   const [openProject, setOpenProject] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  /* inject global CSS once */
+  useEffect(() => {
+    const id = "portfolio-global-styles";
+    if (!document.getElementById(id)) {
+      const el = document.createElement("style");
+      el.id = id;
+      el.textContent = GLOBAL_CSS;
+      document.head.appendChild(el);
+    }
+    /* Google Fonts */
+    const fonts = [
+      "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+    ];
+    fonts.forEach((href) => {
+      if (!document.querySelector(`link[href="${href}"]`)) {
+        const l = document.createElement("link");
+        l.rel = "stylesheet";
+        l.href = href;
+        document.head.appendChild(l);
+      }
+    });
+  }, []);
+
+  /* active section tracking */
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = NAV.map((id) => document.getElementById(id));
+      let current = "About";
+      sections.forEach((section) => {
+        if (!section) return;
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) current = section.id;
+      });
+      setActiveSection(current);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -210,166 +533,17 @@ export default function Portfolio() {
     setMenuOpen(false);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = NAV.map((id) => document.getElementById(id));
-
-      let current = "About";
-
-      sections.forEach((section) => {
-        if (!section) return;
-
-        const rect = section.getBoundingClientRect();
-
-        if (rect.top <= 120 && rect.bottom >= 120) {
-          current = section.id;
-        }
-      });
-
-      setActiveSection(current);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  /* ── RENDER ── */
   return (
     <div
       style={{
-        background: "#0b1120",
-        color: "#e2e8f0",
+        background: T.bg,
+        color: T.textPrimary,
         minHeight: "100vh",
-        fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
+        fontFamily: T.sans,
       }}
     >
-      // ONLY showing CHANGED parts — rest remains same
-      <style>{`
-/* EXISTING CSS stays */
-
-/* ================== RESPONSIVE ================== */
-
-/* NAV */
-.desktop-nav { display: flex; gap: 2rem; }
-.mobile-btn { display: none; }
-
-@media (max-width: 768px) {
-  .desktop-nav { display: none; }
-  .mobile-btn { display: block; }
-}
-
-/* HERO */
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 768px) {
-  .hero {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* EXPERIENCE */
-.exp-item {
-  display: grid;
-  grid-template-columns: minmax(120px, 150px) 1fr;
-  gap: 1rem;
-}
-
-@media (max-width: 600px) {
-  .exp-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-}
-
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-}
-
-/* MOBILE FIX */
-@media (max-width: 768px) {
-  .hero {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .hero img {
-    margin-top: 1.5rem;
-  }
-}
-
-.nav-item::after {
-  content: "";
-  display: block;
-  height: 2px;
-  width: 0;
-  background: #eab308;
-  transition: width 0.3s ease;
-}
-
-.nav-item.active::after {
-  width: 100%;
-}
-
-/* CONTACT */
-.contact-row {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.desktop-nav {
-  display: flex;
-  gap: 2rem;
-}
-
-.mobile-btn {
-  display: none;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .desktop-nav {
-    display: none;
-  }
-
-  .mobile-btn {
-    display: block;
-  }
-}
-
-.mobile-btn {
-  display: none;
-  line-height: 1;
-}
-
-@media (max-width: 600px) {
-  .contact-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* GLOBAL */
-body { overflow-x: hidden; }
-
-@media (max-width: 768px) {
-  section {
-    padding: 4rem 1.2rem !important;
-  }
-}
-`}</style>
-      {/* ── NAV ── */}
+      {/* ════════════════ NAV ════════════════ */}
       <nav
         style={{
           position: "fixed",
@@ -377,9 +551,10 @@ body { overflow-x: hidden; }
           left: 0,
           right: 0,
           zIndex: 100,
-          background: "rgba(11,17,32,0.9)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: "rgba(9,14,26,0.88)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          borderBottom: "1px solid rgba(255,255,255,0.055)",
           padding: "0 2rem",
           height: 56,
           display: "flex",
@@ -387,34 +562,31 @@ body { overflow-x: hidden; }
           justifyContent: "space-between",
         }}
       >
+        {/* Logo */}
         <span
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            color: "#eab308",
-            fontSize: "0.85rem",
-            letterSpacing: "0.05em",
+            fontFamily: T.mono,
+            color: T.gold,
+            fontSize: "0.82rem",
+            letterSpacing: "0.06em",
+            userSelect: "none",
           }}
         >
           faisal.dev
         </span>
 
-        {/* Desktop nav */}
-        <div className="desktop-nav">
+        {/* Desktop links */}
+        <div
+          className="nav-desktop"
+          style={{ gap: "2rem", alignItems: "center" }}
+        >
           {NAV.map((n) => (
             <span
               key={n}
               onClick={() => scrollTo(n)}
-              className="nav-item"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                color: "#94a3b8",
-                fontSize: "0.9rem",
-              }}
+              className={`nav-link${activeSection === n ? " active" : ""}`}
             >
               {n}
-              <NavDot active={activeSection === n} />
             </span>
           ))}
         </div>
@@ -422,18 +594,22 @@ body { overflow-x: hidden; }
         {/* Mobile burger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="mobile-btn"
+          className="nav-mobile-btn"
           style={{
             background: "none",
             border: "none",
-            color: "#94a3b8",
+            color: T.textSecondary,
             cursor: "pointer",
-            fontSize: "1.3rem",
+            fontSize: "1.25rem",
+            lineHeight: 1,
+            padding: "4px 6px",
           }}
+          aria-label="Toggle menu"
         >
           {menuOpen ? "✕" : "☰"}
         </button>
       </nav>
+
       {/* Mobile dropdown */}
       {menuOpen && (
         <div
@@ -443,244 +619,211 @@ body { overflow-x: hidden; }
             left: 0,
             right: 0,
             zIndex: 99,
-            background: "#0f172a",
-            borderBottom: "1px solid rgba(255,255,255,0.08)",
-            padding: "1rem 2rem",
+            background: "#0d1425",
+            borderBottom: "1px solid rgba(255,255,255,0.07)",
+            padding: "1.25rem 2rem",
             display: "flex",
             flexDirection: "column",
-            gap: "1rem",
+            gap: "1.1rem",
           }}
         >
           {NAV.map((n) => (
             <span
               key={n}
-              className="nav-item"
+              className={`nav-link${activeSection === n ? " active" : ""}`}
               onClick={() => scrollTo(n)}
-              style={{ color: "#94a3b8", fontSize: "0.9rem" }}
+              style={{ fontSize: "0.95rem" }}
             >
               {n}
             </span>
           ))}
         </div>
       )}
-      {/* ── HERO ── */}
+
+      {/* ════════════════ HERO ════════════════ */}
       <section
         id="About"
-        className="hero"
         style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          maxWidth: 900,
+          maxWidth: 960,
           margin: "0 auto",
-          padding: "7rem 2rem 4rem",
-          gap: "3rem",
+          padding: "7rem 2rem 5rem",
+          paddingTop: "clamp(5rem, 12vh, 8rem)",
         }}
       >
-        {/* LEFT */}
-        <div className="fade-in" style={{ flex: 1, minWidth: 280 }}>
-          {/* TAGLINE */}
-          <p
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              color: "#eab308",
-              fontSize: "0.78rem",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              marginBottom: "1rem",
-            }}
-          >
-            ↳ Backend Engineer · Payment Systems · Idempotent & Fault-Tolerant
-            Design
-          </p>
-
-          {/* NAME */}
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(2.8rem, 7vw, 5rem)",
-              fontWeight: 900,
-              lineHeight: 1.05,
-              color: "#f1f5f9",
-              marginBottom: "1rem",
-            }}
-          >
-            Faisal Ali
-          </h1>
-
-          {/* AVAILABILITY BADGE */}
-          <div
-            style={{
-              display: "inline-block",
-              padding: "4px 10px",
-              fontSize: "0.7rem",
-              color: "#22c55e",
-              border: "1px solid rgba(34,197,94,0.3)",
-              borderRadius: 20,
-              marginBottom: "1.5rem",
-              fontFamily: "'JetBrains Mono', monospace",
-            }}
-          >
-            ● Open to backend roles
-          </div>
-
-          {/* DESCRIPTION */}
-          <p
-            style={{
-              fontSize: "1.1rem",
-              color: "#94a3b8",
-              maxWidth: 560,
-              lineHeight: 1.7,
-              fontWeight: 300,
-            }}
-          >
-            I build production backend systems for payments and travel platforms
-            — focusing on idempotent flows, event-driven processing, and
-            failure-resistant design.
-          </p>
-
-          {/* CTA BUTTONS */}
-          <div style={{ marginTop: "2.5rem" }}>
-            {/* ROW 1 → RESUME (PRIMARY) */}
-            <div
-              style={{
-                display: "flex",
-                gap: "1rem",
-                marginBottom: "1rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <a
-                href="/Faisal_Ali_Backend_Engineer.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  padding: "10px 24px",
-                  background: "#eab308",
-                  color: "#0b1120",
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  fontSize: "0.82rem",
-                  letterSpacing: "0.04em",
-                  textDecoration: "none",
-                }}
-              >
-                View Resume →
-              </a>
-
-              <a
-                href="/Faisal_Ali_Backend_Engineer.pdf"
-                download
-                style={{
-                  padding: "10px 24px",
-                  border: "1px solid rgba(234,179,8,0.4)",
-                  color: "#eab308",
-                  borderRadius: 4,
-                  fontWeight: 500,
-                  fontSize: "0.82rem",
-                  letterSpacing: "0.04em",
-                  textDecoration: "none",
-                }}
-              >
-                Download ↓
-              </a>
-            </div>
-
-            {/* ROW 2 → SECONDARY */}
-            <div
-              style={{
-                display: "flex",
-                gap: "1rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <a
-                href="mailto:faisal.dev.ali@gmail.com"
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  color: "#94a3b8",
-                  borderRadius: 4,
-                  fontWeight: 500,
-                  fontSize: "0.82rem",
-                  textDecoration: "none",
-                }}
-              >
-                Email
-              </a>
-
-              <a
-                href="https://linkedin.com/in/faisal-ali-877bb4219"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  color: "#94a3b8",
-                  borderRadius: 4,
-                  fontWeight: 500,
-                  fontSize: "0.82rem",
-                  textDecoration: "none",
-                }}
-              >
-                LinkedIn
-              </a>
-
-              <a
-                href="https://github.com/faisal-dev-ali"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  color: "#94a3b8",
-                  borderRadius: 4,
-                  fontWeight: 500,
-                  fontSize: "0.82rem",
-                  textDecoration: "none",
-                }}
-              >
-                GitHub
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT IMAGE */}
+        {/* — top row: text + avatar — */}
         <div
+          className="hero-inner"
           style={{
-            flex: 1,
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
-            marginTop: "2.5rem",
+            justifyContent: "space-between",
+            gap: "3.5rem",
           }}
         >
-          <img
-            src="/profile.png"
-            alt="Faisal Ali"
-            style={{
-              width: "clamp(140px, 40vw, 200px)",
-              height: "clamp(140px, 40vw, 200px)",
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "3px solid rgba(234,179,8,0.4)",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
-              display: "block",
-              margin: "0 auto",
-            }}
-          />
+          {/* LEFT text */}
+          <div className="fade-in" style={{ flex: 1, minWidth: 260 }}>
+            <p
+              className="mono-label fade-in"
+              style={{ marginBottom: "1.25rem" }}
+            >
+              ↳ Backend Engineer · Payment Systems · Idempotent &amp;
+              Fault-Tolerant Design
+            </p>
+
+            <h1 className="display fade-in" style={{ marginBottom: "1rem" }}>
+              Faisal Ali
+            </h1>
+
+            {/* availability badge */}
+            <div
+              className="fade-in-delay"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "5px 14px",
+                fontSize: "0.7rem",
+                color: T.green,
+                border: "1px solid rgba(74,222,128,0.28)",
+                borderRadius: 20,
+                marginBottom: "1.5rem",
+                fontFamily: T.mono,
+                background: "rgba(74,222,128,0.06)",
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: T.green,
+                  flexShrink: 0,
+                }}
+              />
+              Open to backend roles
+            </div>
+
+            <p
+              className="fade-in-delay"
+              style={{
+                fontSize: "1.05rem",
+                color: T.textSecondary,
+                maxWidth: 520,
+                lineHeight: 1.75,
+                fontWeight: 300,
+              }}
+            >
+              I build production backend systems for payments and travel
+              platforms — focusing on idempotent flows, event-driven processing,
+              and failure-resistant design.
+            </p>
+
+            {/* CTA buttons */}
+            <div
+              className="fade-in-delay2"
+              style={{
+                marginTop: "2.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.85rem",
+              }}
+            >
+              {/* Row 1 — primary */}
+              <div
+                className="hero-ctas"
+                style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}
+              >
+                <a
+                  href="/Faisal_Ali_Backend_Engineer.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary"
+                >
+                  View Resume →
+                </a>
+                <a
+                  href="/Faisal_Ali_Backend_Engineer.pdf"
+                  download
+                  className="btn-outline-gold"
+                >
+                  Download ↓
+                </a>
+              </div>
+              {/* Row 2 — secondary */}
+              <div
+                className="hero-ctas"
+                style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}
+              >
+                <a href="mailto:faisal.dev.ali@gmail.com" className="btn-ghost">
+                  Email
+                </a>
+                <a
+                  href="https://linkedin.com/in/faisal-ali-877bb4219"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="https://github.com/faisal-dev-ali"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost"
+                >
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT image */}
+          <div
+            className="hero-image-wrap fade-in-delay"
+            style={{ flexShrink: 0 }}
+          >
+            <div
+              style={{
+                position: "relative",
+                width: "clamp(150px, 22vw, 210px)",
+                height: "clamp(150px, 22vw, 210px)",
+              }}
+            >
+              {/* gold ring */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: -4,
+                  borderRadius: "50%",
+                  border: `2px solid ${T.goldBorder}`,
+                  boxShadow: `0 0 32px rgba(232,184,75,0.12)`,
+                }}
+              />
+              <img
+                src="/profile.png"
+                alt="Faisal Ali"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  display: "block",
+                  boxShadow: T.shadow,
+                }}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Quick facts bar */}
+        {/* — stats bar — */}
         <div
+          className="hero-stats fade-in-delay2"
           style={{
             display: "flex",
-            gap: "2rem",
-            marginTop: "5rem",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
+            gap: "2.5rem",
+            marginTop: "4rem",
             paddingTop: "2rem",
+            borderTop: "1px solid rgba(255,255,255,0.07)",
             flexWrap: "wrap",
           }}
         >
@@ -690,19 +833,24 @@ body { overflow-x: hidden; }
             ["Travel & Rewards", "Customer platforms"],
             ["Kafka + Redis", "Event-driven · idempotency"],
           ].map(([val, label]) => (
-            <div key={val}>
+            <div key={val} style={{ minWidth: 110 }}>
               <div
                 style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontSize: "1.5rem",
+                  fontFamily: T.serif,
+                  fontSize: "1.4rem",
                   fontWeight: 700,
-                  color: "#eab308",
+                  color: T.gold,
+                  lineHeight: 1.1,
                 }}
               >
                 {val}
               </div>
               <div
-                style={{ fontSize: "0.75rem", color: "#64748b", marginTop: 2 }}
+                style={{
+                  fontSize: "0.72rem",
+                  color: T.textMuted,
+                  marginTop: 4,
+                }}
               >
                 {label}
               </div>
@@ -710,19 +858,24 @@ body { overflow-x: hidden; }
           ))}
         </div>
 
-        {/* About text */}
+        {/* — about text — */}
         <div
+          className="hero-about-box fade-in-delay2"
           style={{
-            marginTop: "3rem",
-            padding: "2rem",
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: 8,
-            maxWidth: 700,
+            marginTop: "2.5rem",
+            padding: "1.75rem 2rem",
+            background: T.bgCard,
+            border: `1px solid ${T.border}`,
+            borderRadius: T.radius,
+            maxWidth: 720,
           }}
         >
           <p
-            style={{ color: "#94a3b8", lineHeight: 1.85, fontSize: "0.95rem" }}
+            style={{
+              color: T.textSecondary,
+              lineHeight: 1.9,
+              fontSize: "0.92rem",
+            }}
           >
             Most of what I've learned has come from production failures — a
             payment that got processed twice, a cache that silently evicted a
@@ -738,63 +891,33 @@ body { overflow-x: hidden; }
           </p>
         </div>
       </section>
-      {/* ── SKILLS ── */}
-      <section
-        id="Skills"
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "5rem 2rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+
+      {/* ════════════════ SKILLS ════════════════ */}
+      <section id="Skills" className="section">
         <SectionLabel>Technical Skills</SectionLabel>
-        <h2 style={h2Style}>The tools I reach for</h2>
+        <h2 className="section-heading" style={{ marginBottom: "2.5rem" }}>
+          The tools I reach for
+        </h2>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: "1.5rem",
-            marginTop: "2.5rem",
+            gridTemplateColumns: "repeat(auto-fill, minmax(245px, 1fr))",
+            gap: "1.25rem",
           }}
         >
           {SKILLS.map((group) => (
             <div
               key={group.label}
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderRadius: 8,
-                padding: "1.25rem 1.5rem",
-              }}
+              className="card"
+              style={{ padding: "1.35rem 1.5rem" }}
             >
-              <p
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  color: "#eab308",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  marginBottom: "0.85rem",
-                }}
-              >
+              <p className="mono-label" style={{ marginBottom: "0.85rem" }}>
                 {group.label}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
                 {group.items.map((item) => (
-                  <span
-                    key={item}
-                    className="skill-pill"
-                    style={{
-                      fontSize: "0.78rem",
-                      color: "#cbd5e1",
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 4,
-                      padding: "3px 10px",
-                    }}
-                  >
+                  <span key={item} className="skill-pill">
                     {item}
                   </span>
                 ))}
@@ -803,38 +926,35 @@ body { overflow-x: hidden; }
           ))}
         </div>
       </section>
-      {/* ── EXPERIENCE ── */}
-      <section
-        id="Experience"
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "5rem 2rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+
+      {/* ════════════════ EXPERIENCE ════════════════ */}
+      <section id="Experience" className="section">
         <SectionLabel>Work Experience</SectionLabel>
-        <h2 style={h2Style}>Where I've built things</h2>
+        <h2 className="section-heading" style={{ marginBottom: "2.5rem" }}>
+          Where I've built things
+        </h2>
 
         <div
           style={{
-            marginTop: "2.5rem",
-            borderLeft: "2px solid rgba(234,179,8,0.3)",
+            borderLeft: `2px solid ${T.goldBorder}`,
             paddingLeft: "2rem",
           }}
         >
           <div style={{ position: "relative" }}>
+            {/* timeline dot */}
             <div
               style={{
                 position: "absolute",
-                left: -33,
-                top: 6,
+                left: -35,
+                top: 8,
                 width: 10,
                 height: 10,
-                background: "#eab308",
+                background: T.gold,
                 borderRadius: "50%",
+                boxShadow: `0 0 10px rgba(232,184,75,0.35)`,
               }}
             />
+
             <div
               style={{
                 display: "flex",
@@ -842,25 +962,21 @@ body { overflow-x: hidden; }
                 justifyContent: "space-between",
                 flexWrap: "wrap",
                 gap: "0.5rem",
+                marginBottom: "1.75rem",
               }}
             >
               <div>
                 <h3
                   style={{
-                    fontSize: "1.15rem",
+                    fontSize: "1.1rem",
                     fontWeight: 600,
-                    color: "#f1f5f9",
+                    color: T.textPrimary,
+                    marginBottom: 4,
                   }}
                 >
                   Software Engineer
                 </h3>
-                <p
-                  style={{
-                    color: "#eab308",
-                    fontSize: "0.85rem",
-                    marginTop: 2,
-                  }}
-                >
+                <p style={{ color: T.gold, fontSize: "0.84rem" }}>
                   R360 Global Services · Bangalore
                 </p>
               </div>
@@ -868,12 +984,7 @@ body { overflow-x: hidden; }
             </div>
 
             <div
-              style={{
-                marginTop: "1.5rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
+              style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
             >
               {[
                 {
@@ -902,64 +1013,33 @@ body { overflow-x: hidden; }
                     "Set up structured JSON logging (provider, request ID, latency, status, error codes), Grafana dashboards, and CloudWatch alarms for critical payment flows.",
                 },
               ].map(({ area, detail }) => (
-                <div
-                  key={area}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "minmax(130px, 160px) 1fr",
-                    gap: "1rem",
-                    fontSize: "0.88rem",
-                    lineHeight: 1.7,
-                    paddingBottom: "0.8rem",
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
-                  }}
-                >
-                  {/* LEFT */}
+                <div key={area} className="exp-row">
                   <span
                     style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      color: "#eab308",
-                      fontSize: "0.75rem",
+                      fontFamily: T.mono,
+                      color: T.gold,
+                      fontSize: "0.72rem",
+                      paddingTop: 2,
                     }}
                   >
                     {area}
                   </span>
-
-                  {/* RIGHT */}
-                  <span
-                    style={{
-                      color: "#94a3b8",
-                    }}
-                  >
-                    {detail}
-                  </span>
+                  <span className="body-text">{detail}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </section>
-      {/* ── PROJECTS ── */}
-      <section
-        id="Projects"
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "5rem 2rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <SectionLabel>Key Projects</SectionLabel>
-        <h2 style={h2Style}>What I've actually built</h2>
 
-        <div
-          style={{
-            marginTop: "2.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1.25rem",
-          }}
-        >
+      {/* ════════════════ PROJECTS ════════════════ */}
+      <section id="Projects" className="section">
+        <SectionLabel>Key Projects</SectionLabel>
+        <h2 className="section-heading" style={{ marginBottom: "2.5rem" }}>
+          What I've actually built
+        </h2>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {PROJECTS.map((p, i) => {
             const isOpen = openProject === i;
             return (
@@ -967,105 +1047,98 @@ body { overflow-x: hidden; }
                 key={p.title}
                 className="project-card"
                 style={{
-                  background: isOpen
-                    ? "rgba(234,179,8,0.04)"
-                    : "rgba(255,255,255,0.025)",
-                  border: `1px solid ${isOpen ? "rgba(234,179,8,0.35)" : "rgba(255,255,255,0.08)"}`,
-                  borderRadius: 8,
+                  background: isOpen ? "rgba(232,184,75,0.035)" : T.bgCard,
+                  border: `1px solid ${isOpen ? T.goldBorder : T.border}`,
                   overflow: "hidden",
                 }}
               >
-                {/* Header — always visible */}
+                {/* header */}
                 <div
                   onClick={() => setOpenProject(isOpen ? null : i)}
                   style={{
-                    padding: "1.5rem",
+                    padding: "1.4rem 1.5rem",
                     cursor: "pointer",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
                     gap: "1rem",
+                    userSelect: "none",
                   }}
                 >
-                  <div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div
                       style={{
                         display: "flex",
                         gap: "0.5rem",
                         flexWrap: "wrap",
-                        marginBottom: "0.5rem",
+                        marginBottom: "0.55rem",
                       }}
                     >
                       <Tag accent>{p.tag}</Tag>
                     </div>
                     <h3
                       style={{
-                        fontSize: "1.05rem",
+                        fontSize: "1rem",
                         fontWeight: 600,
-                        color: "#f1f5f9",
+                        color: T.textPrimary,
+                        marginBottom: 3,
                       }}
                     >
                       {p.title}
                     </h3>
-                    <p
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "#64748b",
-                        marginTop: 3,
-                      }}
-                    >
+                    <p style={{ fontSize: "0.78rem", color: T.textMuted }}>
                       {p.subtitle}
                     </p>
                   </div>
                   <span
                     style={{
-                      color: "#eab308",
-                      fontSize: "1.1rem",
+                      color: T.gold,
+                      fontSize: "1.25rem",
                       flexShrink: 0,
-                      marginTop: 4,
+                      lineHeight: 1,
+                      marginTop: 2,
+                      fontWeight: 300,
                     }}
                   >
                     {isOpen ? "−" : "+"}
                   </span>
                 </div>
 
-                {/* Expanded content */}
+                {/* expanded */}
                 {isOpen && (
                   <div
                     className="fade-in"
                     style={{
-                      padding: "0 1.5rem 1.5rem",
+                      padding: "0 1.5rem 1.75rem",
                       display: "flex",
                       flexDirection: "column",
                       gap: "1.5rem",
                     }}
                   >
-                    <Divider />
+                    <div className="divider" />
 
                     <ProjectBlock label="Problem">
-                      <p style={bodyText}>{p.problem}</p>
+                      <p className="body-text">{p.problem}</p>
                     </ProjectBlock>
 
                     <ProjectBlock label="Architecture">
-                      <p style={bodyText}>{p.architecture}</p>
-
-                      {/* ✅ Diagram */}
+                      <p className="body-text">{p.architecture}</p>
                       {p.diagram && (
                         <div
                           style={{
                             marginTop: "1rem",
-                            padding: "1rem",
-                            background: "rgba(255,255,255,0.03)",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                            borderRadius: 6,
-                            fontFamily: "'JetBrains Mono', monospace",
-                            fontSize: "0.75rem",
-                            color: "#cbd5e1",
-                            lineHeight: 1.8,
+                            padding: "1rem 1.25rem",
+                            background: "rgba(255,255,255,0.028)",
+                            border: `1px solid ${T.border}`,
+                            borderRadius: T.radiusSm,
+                            fontFamily: T.mono,
+                            fontSize: "0.73rem",
+                            color: "#b4c0d4",
+                            lineHeight: 1.9,
                           }}
                         >
-                          {p.diagram.map((line, i) => (
-                            <div key={i}>{line}</div>
+                          {p.diagram.map((line, idx) => (
+                            <div key={idx}>{line}</div>
                           ))}
                         </div>
                       )}
@@ -1090,7 +1163,8 @@ body { overflow-x: hidden; }
                         style={{
                           display: "flex",
                           flexDirection: "column",
-                          gap: "0.6rem",
+                          gap: "0.65rem",
+                          listStyle: "none",
                         }}
                       >
                         {p.challenges.map((c, ci) => (
@@ -1099,16 +1173,16 @@ body { overflow-x: hidden; }
                             style={{
                               display: "flex",
                               gap: "0.75rem",
-                              fontSize: "0.85rem",
-                              color: "#94a3b8",
-                              lineHeight: 1.7,
+                              fontSize: "0.875rem",
+                              color: T.textSecondary,
+                              lineHeight: 1.75,
                             }}
                           >
                             <span
                               style={{
-                                color: "#eab308",
+                                color: T.gold,
                                 flexShrink: 0,
-                                marginTop: 2,
+                                marginTop: 3,
                               }}
                             >
                               →
@@ -1120,7 +1194,13 @@ body { overflow-x: hidden; }
                     </ProjectBlock>
 
                     <ProjectBlock label="Impact">
-                      <p style={{ ...bodyText, color: "#a3e635" }}>
+                      <p
+                        style={{
+                          fontSize: "0.875rem",
+                          color: T.green,
+                          lineHeight: 1.75,
+                        }}
+                      >
                         {p.impact}
                       </p>
                     </ProjectBlock>
@@ -1131,80 +1211,91 @@ body { overflow-x: hidden; }
           })}
         </div>
       </section>
-      <section
-        id="Incident"
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "5rem 2rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+
+      {/* ════════════════ INCIDENT ════════════════ */}
+      <section id="Incident" className="section">
         <SectionLabel>Production Incident</SectionLabel>
-        <h2 style={h2Style}>Handling real failures</h2>
+        <h2 className="section-heading" style={{ marginBottom: "2rem" }}>
+          Handling real failures
+        </h2>
 
         <div
+          className="card"
           style={{
-            marginTop: "2rem",
-            padding: "1.5rem",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 6,
-            background: "rgba(255,255,255,0.02)",
+            padding: "1.75rem 2rem",
+            borderLeft: `3px solid ${T.gold}`,
+            borderRadius: T.radius,
           }}
         >
-          <h3 style={{ color: "#f1f5f9", marginBottom: "1rem" }}>
+          <h3
+            style={{
+              color: T.textPrimary,
+              marginBottom: "1rem",
+              fontSize: "1.05rem",
+              fontWeight: 600,
+            }}
+          >
             Duplicate Payment Issue
           </h3>
 
-          <p style={{ color: "#94a3b8", marginBottom: "1rem" }}>
+          <p className="body-text" style={{ marginBottom: "1.25rem" }}>
             Duplicate transactions were occurring due to retry race conditions
             between API retries and webhook processing.
           </p>
 
           <ul
             style={{
-              color: "#94a3b8",
-              fontSize: "0.9rem",
-              lineHeight: 1.7,
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.55rem",
+              listStyle: "none",
             }}
           >
-            <li>
-              Implemented Redis-based idempotency using SETNX to ensure single
-              processing per transaction
-            </li>
-            <li>
-              Added database-level unique constraints as a secondary safeguard
-            </li>
-            <li>Standardised retry handling across async and webhook flows</li>
+            {[
+              "Implemented Redis-based idempotency using SETNX to ensure single processing per transaction",
+              "Added database-level unique constraints as a secondary safeguard",
+              "Standardised retry handling across async and webhook flows",
+            ].map((item) => (
+              <li
+                key={item}
+                style={{
+                  display: "flex",
+                  gap: "0.65rem",
+                  fontSize: "0.875rem",
+                  color: T.textSecondary,
+                  lineHeight: 1.7,
+                }}
+              >
+                <span style={{ color: T.gold, flexShrink: 0, marginTop: 3 }}>
+                  →
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
           </ul>
 
           <p
             style={{
-              marginTop: "1rem",
-              color: "#eab308",
-              fontSize: "0.85rem",
+              marginTop: "1.25rem",
+              color: T.gold,
+              fontSize: "0.82rem",
+              fontFamily: T.mono,
+              letterSpacing: "0.03em",
             }}
           >
             Result: Zero duplicate transactions across live production traffic
           </p>
         </div>
       </section>
-      {/* ── THINKING ── */}
-      <section
-        id="Thinking"
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "5rem 2rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+
+      {/* ════════════════ THINKING ════════════════ */}
+      <section id="Thinking" className="section">
         <SectionLabel>Engineering Thinking</SectionLabel>
-        <h2 style={h2Style}>How I approach problems</h2>
+        <h2 className="section-heading">How I approach problems</h2>
         <p
           style={{
-            color: "#64748b",
-            fontSize: "0.9rem",
+            color: T.textMuted,
+            fontSize: "0.88rem",
             marginTop: "0.5rem",
             marginBottom: "2.5rem",
           }}
@@ -1213,31 +1304,18 @@ body { overflow-x: hidden; }
           getting things wrong in production.
         </p>
 
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {THINKING.map((t, i) => (
-            <div
-              key={t.heading}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "auto 1fr",
-                gap: "1.5rem",
-                padding: "1.5rem",
-                background: "rgba(255,255,255,0.025)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderRadius: 8,
-                alignItems: "start",
-              }}
-            >
+            <div key={t.heading} className="thinking-card">
               <span
                 style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  color: "#eab308",
-                  fontSize: "1rem",
+                  fontFamily: T.mono,
+                  color: T.gold,
+                  fontSize: "0.72rem",
                   fontWeight: 500,
-                  opacity: 0.5,
-                  paddingTop: 2,
+                  opacity: 0.55,
+                  paddingTop: 3,
+                  userSelect: "none",
                 }}
               >
                 0{i + 1}
@@ -1245,37 +1323,35 @@ body { overflow-x: hidden; }
               <div>
                 <h4
                   style={{
-                    color: "#f1f5f9",
+                    color: T.textPrimary,
                     fontWeight: 600,
                     fontSize: "0.95rem",
                     marginBottom: "0.5rem",
+                    lineHeight: 1.4,
                   }}
                 >
                   {t.heading}
                 </h4>
-                <p style={bodyText}>{t.body}</p>
+                <p className="body-text">{t.body}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
-      {/* ── CONTACT ── */}
+
+      {/* ════════════════ CONTACT ════════════════ */}
       <section
         id="Contact"
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "5rem 2rem 8rem",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
+        className="section"
+        style={{ paddingBottom: "7rem" }}
       >
         <SectionLabel>Contact</SectionLabel>
-        <h2 style={h2Style}>Let's talk</h2>
+        <h2 className="section-heading">Let's talk</h2>
 
         <p
           style={{
-            color: "#64748b",
-            fontSize: "0.9rem",
+            color: T.textMuted,
+            fontSize: "0.88rem",
             marginTop: "0.5rem",
             marginBottom: "2.5rem",
           }}
@@ -1283,7 +1359,9 @@ body { overflow-x: hidden; }
           Open to backend / distributed systems roles at product companies.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+        >
           {[
             {
               label: "Email",
@@ -1310,61 +1388,42 @@ body { overflow-x: hidden; }
               action: "Call →",
             },
           ].map(({ label, value, href, action }) => (
-            <div
-              key={label}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "1rem 1.5rem",
-                background: "rgba(255,255,255,0.025)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderRadius: 6,
-                transition: "all 0.2s ease",
-              }}
-            >
-              {/* LEFT SIDE */}
-              <div>
+            <div key={label} className="contact-card">
+              <div style={{ minWidth: 0 }}>
                 <div
                   style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "#64748b",
-                    fontSize: "0.7rem",
+                    fontFamily: T.mono,
+                    color: T.textMuted,
+                    fontSize: "0.66rem",
                     textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    marginBottom: 4,
+                    letterSpacing: "0.12em",
+                    marginBottom: 5,
                   }}
                 >
                   {label}
                 </div>
-
                 <a
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    color: "#eab308",
-                    fontSize: "0.9rem",
+                    color: T.gold,
+                    fontSize: "0.88rem",
                     textDecoration: "none",
+                    transition: "color 0.18s",
+                    wordBreak: "break-all",
                   }}
+                  onMouseEnter={(e) => (e.target.style.color = T.goldHover)}
+                  onMouseLeave={(e) => (e.target.style.color = T.gold)}
                 >
                   {value}
                 </a>
               </div>
-
-              {/* RIGHT CTA */}
               <a
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  fontSize: "0.75rem",
-                  color: "#94a3b8",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "6px 12px",
-                  borderRadius: 4,
-                  textDecoration: "none",
-                }}
+                className="contact-action"
               >
                 {action}
               </a>
@@ -1372,74 +1431,21 @@ body { overflow-x: hidden; }
           ))}
         </div>
       </section>
-      {/* Footer */}
+
+      {/* ════════════════ FOOTER ════════════════ */}
       <div
         style={{
           textAlign: "center",
-          padding: "1.5rem",
+          padding: "1.5rem 2rem",
           borderTop: "1px solid rgba(255,255,255,0.05)",
-          color: "#334155",
-          fontSize: "0.75rem",
-          fontFamily: "'JetBrains Mono', monospace",
+          color: T.textMuted,
+          fontSize: "0.72rem",
+          fontFamily: T.mono,
+          letterSpacing: "0.05em",
         }}
       >
         faisal ali · backend engineer · bangalore · {new Date().getFullYear()}
       </div>
     </div>
   );
-}
-
-/* ── HELPERS ── */
-function SectionLabel({ children }) {
-  return (
-    <p
-      style={{
-        fontFamily: "'JetBrains Mono', monospace",
-        color: "#eab308",
-        fontSize: "0.7rem",
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        marginBottom: "0.6rem",
-      }}
-    >
-      ↳ {children}
-    </p>
-  );
-}
-
-const h2Style = {
-  fontFamily: "'Playfair Display', Georgia, serif",
-  fontSize: "clamp(1.6rem, 4vw, 2.5rem)",
-  fontWeight: 700,
-  color: "#f1f5f9",
-};
-
-const bodyText = {
-  fontSize: "0.88rem",
-  color: "#94a3b8",
-  lineHeight: 1.8,
-};
-
-function ProjectBlock({ label, children }) {
-  return (
-    <div>
-      <p
-        style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          color: "#64748b",
-          fontSize: "0.68rem",
-          textTransform: "uppercase",
-          letterSpacing: "0.1em",
-          marginBottom: "0.5rem",
-        }}
-      >
-        {label}
-      </p>
-      {children}
-    </div>
-  );
-}
-
-function Divider() {
-  return <div style={{ height: 1, background: "rgba(255,255,255,0.07)" }} />;
 }
