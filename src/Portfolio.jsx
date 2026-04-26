@@ -5,6 +5,7 @@ const NAV = [
   "Skills",
   "Experience",
   "Projects",
+  "Incident",
   "Thinking",
   "Contact",
 ];
@@ -515,79 +516,22 @@ body { overflow-x: hidden; }
               fontWeight: 300,
             }}
           >
-            I design and build backend systems for payments and travel platforms
-            — working on idempotent flows, event-driven processing, and
-            distributed caching. Most of my work runs in production, so I focus
-            on reliability, failure handling, and clean system boundaries.
+            I build production backend systems for payments and travel platforms
+            — focusing on idempotent flows, event-driven processing, and
+            failure-resistant design.
           </p>
 
           {/* CTA BUTTONS */}
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              marginTop: "2.5rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <a
-              href="mailto:faisal.dev.ali@gmail.com"
-              style={{
-                padding: "10px 24px",
-                background: "#eab308",
-                color: "#0b1120",
-                borderRadius: 4,
-                fontWeight: 600,
-                fontSize: "0.82rem",
-                letterSpacing: "0.04em",
-                textDecoration: "none",
-              }}
-            >
-              Email me →
-            </a>
-
-            <a
-              href="https://linkedin.com/in/faisal-ali-877bb4219"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                padding: "10px 24px",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "#94a3b8",
-                borderRadius: 4,
-                fontWeight: 500,
-                fontSize: "0.82rem",
-                textDecoration: "none",
-              }}
-            >
-              LinkedIn
-            </a>
-
-            <a
-              href="https://github.com/faisal-dev-ali"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                padding: "10px 24px",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "#94a3b8",
-                borderRadius: 4,
-                fontWeight: 500,
-                fontSize: "0.82rem",
-                textDecoration: "none",
-              }}
-            >
-              GitHub
-            </a>
-
+          <div style={{ marginTop: "2.5rem" }}>
+            {/* ROW 1 → RESUME (PRIMARY) */}
             <div
               style={{
                 display: "flex",
                 gap: "1rem",
+                marginBottom: "1rem",
                 flexWrap: "wrap",
               }}
             >
-              {/* VIEW */}
               <a
                 href="/Faisal_Ali_Backend_Engineer.pdf"
                 target="_blank"
@@ -606,7 +550,6 @@ body { overflow-x: hidden; }
                 View Resume →
               </a>
 
-              {/* DOWNLOAD */}
               <a
                 href="/Faisal_Ali_Backend_Engineer.pdf"
                 download
@@ -622,6 +565,64 @@ body { overflow-x: hidden; }
                 }}
               >
                 Download ↓
+              </a>
+            </div>
+
+            {/* ROW 2 → SECONDARY */}
+            <div
+              style={{
+                display: "flex",
+                gap: "1rem",
+                flexWrap: "wrap",
+              }}
+            >
+              <a
+                href="mailto:faisal.dev.ali@gmail.com"
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#94a3b8",
+                  borderRadius: 4,
+                  fontWeight: 500,
+                  fontSize: "0.82rem",
+                  textDecoration: "none",
+                }}
+              >
+                Email
+              </a>
+
+              <a
+                href="https://linkedin.com/in/faisal-ali-877bb4219"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#94a3b8",
+                  borderRadius: 4,
+                  fontWeight: 500,
+                  fontSize: "0.82rem",
+                  textDecoration: "none",
+                }}
+              >
+                LinkedIn
+              </a>
+
+              <a
+                href="https://github.com/faisal-dev-ali"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: "10px 20px",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#94a3b8",
+                  borderRadius: 4,
+                  fontWeight: 500,
+                  fontSize: "0.82rem",
+                  textDecoration: "none",
+                }}
+              >
+                GitHub
               </a>
             </div>
           </div>
@@ -1106,6 +1107,64 @@ body { overflow-x: hidden; }
               </div>
             );
           })}
+        </div>
+      </section>
+      <section
+        id="Incident"
+        style={{
+          maxWidth: 900,
+          margin: "0 auto",
+          padding: "5rem 2rem",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <SectionLabel>Production Incident</SectionLabel>
+        <h2 style={h2Style}>Handling real failures</h2>
+
+        <div
+          style={{
+            marginTop: "2rem",
+            padding: "1.5rem",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 6,
+            background: "rgba(255,255,255,0.02)",
+          }}
+        >
+          <h3 style={{ color: "#f1f5f9", marginBottom: "1rem" }}>
+            Duplicate Payment Issue
+          </h3>
+
+          <p style={{ color: "#94a3b8", marginBottom: "1rem" }}>
+            Duplicate transactions were occurring due to retry race conditions
+            between API retries and webhook processing.
+          </p>
+
+          <ul
+            style={{
+              color: "#94a3b8",
+              fontSize: "0.9rem",
+              lineHeight: 1.7,
+            }}
+          >
+            <li>
+              Implemented Redis-based idempotency using SETNX to ensure single
+              processing per transaction
+            </li>
+            <li>
+              Added database-level unique constraints as a secondary safeguard
+            </li>
+            <li>Standardised retry handling across async and webhook flows</li>
+          </ul>
+
+          <p
+            style={{
+              marginTop: "1rem",
+              color: "#eab308",
+              fontSize: "0.85rem",
+            }}
+          >
+            Result: Zero duplicate transactions across live production traffic
+          </p>
         </div>
       </section>
       {/* ── THINKING ── */}
