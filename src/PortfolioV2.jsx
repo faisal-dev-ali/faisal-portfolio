@@ -1016,6 +1016,18 @@ const GLOBAL_CSS = `
   letter-spacing: 0.02em;
   margin-bottom: 0.75rem;
 }
+  .show-more-btn {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: transparent;
+  border-radius: var(--r-sm);
+  transition: var(--transition-base);
+}
+.show-more-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
 
 .edu-details {
   list-style: none;
@@ -1046,7 +1058,24 @@ const GLOBAL_CSS = `
     .section { padding: 3.5rem 0; }
     .hero-inner { flex-direction: column-reverse; gap: 2rem; }
     .hero-visual { width: 110px; height: 110px; }
-    .stats-row { flex-direction: column; gap: 1rem; }
+    @media (max-width: 768px) {
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+    @media (max-width: 768px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+  .stat-item {
+    border-right: none !important;
+    border-bottom: none !important;
+    padding: 0.75rem 0;
+  }
+}
     .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 0.75rem 0; }
     .stat-item:last-child { border-bottom: none; }
     .exp-header { flex-direction: column; gap: 0.25rem; }
@@ -1119,6 +1148,8 @@ export default function Portfolio() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState("dark");
+  const [expandedExperience, setExpandedExperience] = useState(null);
+  const [expandedSkills, setExpandedSkills] = useState({});
 
   useEffect(() => {
     const id = "pf-global-css";
@@ -1410,80 +1441,131 @@ export default function Portfolio() {
             <h2 className="t-section">Technical Skills</h2>
           </Reveal>
           <div className="skills-grid">
-            {SKILLS.map(({ label, icon, items }, i) => (
-              <Reveal key={label} delay={i * 80}>
-                <div className="skill-category">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.6rem",
-                      marginBottom: "0.85rem",
-                    }}
-                  >
-                    <span
+            {SKILLS.map(({ label, icon, items }, idx) => {
+              const isExpanded = expandedSkills[idx];
+              const visibleItems = isExpanded ? items : items.slice(0, 3);
+              return (
+                <Reveal key={label} delay={idx * 80}>
+                  <div className="skill-category">
+                    <div
                       style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "1.1rem",
-                        color: "var(--text-muted)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.6rem",
+                        marginBottom: "0.85rem",
                       }}
                     >
-                      {icon}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.72rem",
-                        fontWeight: 600,
-                        color: "var(--text-primary)",
-                        letterSpacing: "0.03em",
-                      }}
-                    >
-                      {label}
-                    </span>
-                  </div>
-                  <div
-                    style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}
-                  >
-                    {items.map((item) => (
-                      <span key={item} className="skill-pill">
-                        {item}
+                      <span
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "1.1rem",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        {icon}
                       </span>
-                    ))}
+                      <span
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "0.72rem",
+                          fontWeight: 600,
+                          color: "var(--text-primary)",
+                          letterSpacing: "0.03em",
+                        }}
+                      >
+                        {label}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "0.4rem",
+                      }}
+                    >
+                      {visibleItems.map((item) => (
+                        <span key={item} className="skill-pill">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                    {items.length > 3 && (
+                      <button
+                        className="btn-ghost show-more-btn"
+                        onClick={() =>
+                          setExpandedSkills((prev) => ({
+                            ...prev,
+                            [idx]: !prev[idx],
+                          }))
+                        }
+                        style={{
+                          marginTop: "0.75rem",
+                          padding: "6px 14px",
+                          fontSize: "0.65rem",
+                        }}
+                      >
+                        {isExpanded
+                          ? "Show less ↑"
+                          : `+${items.length - 3} more`}
+                      </button>
+                    )}
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* EXPERIENCE */}
       <section id="Experience" className="section">
-        <div className="container">
-          <Reveal>
-            <h2 className="t-section">Experience</h2>
-          </Reveal>
-          {EXPERIENCE.map((exp) => (
-            <Reveal key={exp.company}>
-              <div className="exp-card">
-                <div className="exp-header">
-                  <span className="exp-role">{exp.role}</span>
-                  <span className="exp-company">{exp.company}</span>
-                  <span className="exp-period">
-                    {exp.location} · {exp.period}
-                  </span>
-                </div>
-                <p className="exp-context">{exp.context}</p>
-                <ul className="exp-highlights">
-                  {exp.highlights.map((h, i) => (
-                    <li key={i}>{h}</li>
-                  ))}
-                </ul>
-              </div>
+        <section id="Experience" className="section">
+          <div className="container">
+            <Reveal>
+              <h2 className="t-section">Experience</h2>
             </Reveal>
-          ))}
-        </div>
+            {EXPERIENCE.map((exp, idx) => {
+              const isExpanded = expandedExperience === idx;
+              const visibleHighlights = isExpanded
+                ? exp.highlights
+                : exp.highlights.slice(0, 2);
+              return (
+                <Reveal key={exp.company}>
+                  <div className="exp-card">
+                    <div className="exp-header">
+                      <span className="exp-role">{exp.role}</span>
+                      <span className="exp-company">{exp.company}</span>
+                      <span className="exp-period">
+                        {exp.location} · {exp.period}
+                      </span>
+                    </div>
+                    <p className="exp-context">{exp.context}</p>
+                    <ul className="exp-highlights">
+                      {visibleHighlights.map((h, i) => (
+                        <li key={i}>{h}</li>
+                      ))}
+                    </ul>
+                    {exp.highlights.length > 3 && (
+                      <button
+                        className="btn-ghost show-more-btn"
+                        onClick={() =>
+                          setExpandedExperience(isExpanded ? null : idx)
+                        }
+                        style={{
+                          marginTop: "0.75rem",
+                          padding: "6px 14px",
+                          fontSize: "0.65rem",
+                        }}
+                      >
+                        {isExpanded ? "Show less ↑" : "Show more ↓"}
+                      </button>
+                    )}
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </section>
       </section>
 
       {/* ── EDUCATION ── */}
