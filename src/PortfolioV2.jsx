@@ -7,9 +7,28 @@ const NAV = [
   "About",
   "Skills",
   "Experience",
+  "Education",
   "Projects",
   "Thinking",
   "Contact",
+];
+
+const EDUCATION = [
+  {
+    degree: "B.E. Computer Science",
+    school: "Rajiv Gandhi Proudyogiki Vishwavidyalaya (RGPV)",
+    details: ["Solved 350+ DSA problems on LeetCode and GeeksforGeeks"],
+    period: "2016 – 2020",
+  },
+  {
+    degree: "Full Stack Java Program",
+    school: "Geekster",
+    details: [
+      "Shipped Java / Spring Boot / REST API projects",
+      "Hands‑on with production‑style backend patterns",
+    ],
+    period: "Oct 2022 – Mar 2023",
+  },
 ];
 
 const SKILLS = [
@@ -83,8 +102,7 @@ const PROJECTS = [
   {
     title: "Payment Gateway Integration",
     tag: "Fintech",
-    image:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=300&fit=crop",
+    src: "/payment.png",
     description:
       "End-to-end idempotent payment processing across multiple providers with zero duplicate transactions in 6+ months of production.",
     details: {
@@ -109,8 +127,7 @@ const PROJECTS = [
   {
     title: "iCash Loyalty Engine",
     tag: "Rewards",
-    image:
-      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",
+    src: "/icash.png",
     description:
       "Atomic reward crediting engine with Redis Lua scripts — eliminated race conditions and over-disbursement entirely.",
     details: {
@@ -133,8 +150,7 @@ const PROJECTS = [
   {
     title: "Unified Travel Partner Layer",
     tag: "Travel",
-    image:
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=300&fit=crop",
+    src: "/hotel-service.png",
     description:
       "Single abstraction over MMT, Cleartrip, Yatra, and Tripsure — 30% latency reduction, 40% faster debugging.",
     details: {
@@ -153,13 +169,15 @@ const PROJECTS = [
       impact:
         "Provider-call latency down 30%. Debug time reduced ~40%. New providers onboard without touching booking logic.",
     },
-    links: { github: "#", live: null },
+    links: {
+      github: "https://github.com/faisal-dev-ali/hotel-service",
+      live: null,
+    },
   },
   {
     title: "HotelX — Booking Platform",
     tag: "Full-Stack",
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop",
+    src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop",
     description:
       "Production-style hotel booking system with JWT auth, room search, full booking lifecycle, and React frontend.",
     details: {
@@ -172,15 +190,14 @@ const PROJECTS = [
         "End-to-end working booking platform. Demonstrates full-stack capability and production architecture patterns.",
     },
     links: {
-      github: "https://github.com/faisal-dev-ali/hotel-service",
+      github: "https://github.com/faisal-dev-ali/hotelx-frontend",
       live: null,
     },
   },
   {
     title: "Order Management Service",
     tag: "Backend",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=300&fit=crop",
+    src: "/order-service.png",
     description:
       "Centralized multi-domain order creation, state transitions, and cancellation behind a single service.",
     details: {
@@ -200,8 +217,7 @@ const PROJECTS = [
   {
     title: "Coupon & Promotions Engine",
     tag: "Backend",
-    image:
-      "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=600&h=300&fit=crop",
+    src: "/coupon.png",
     description:
       "Rule-based coupon engine with one-time usage enforcement, customer segmentation, and expiry logic.",
     details: {
@@ -669,8 +685,8 @@ const GLOBAL_CSS = `
   /* Project cards */
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.25rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
   }
   .project-card {
     background: var(--bg-card);
@@ -692,11 +708,11 @@ const GLOBAL_CSS = `
     background: var(--bg-card-hover);
   }
   .project-card-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-  }
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
   .project-card-content {
     padding: 1.5rem 1.75rem 1.75rem;
     display: flex;
@@ -866,6 +882,161 @@ const GLOBAL_CSS = `
     transform: translateY(0);
   }
 
+  /* Modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--r-lg);
+  max-width: 750px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: scaleIn 0.25s ease;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+}
+.modal-close:hover {
+  background: var(--text-primary);
+  color: var(--accent-inverse);
+}
+
+.modal-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  display: block;
+}
+
+.modal-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+  /* Education grid */
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.edu-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.75rem;
+  transition: var(--transition-base);
+}
+.edu-card:hover {
+  border-color: var(--text-primary);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.edu-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.edu-degree {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.edu-period {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.edu-school {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.edu-details {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.edu-details li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 1rem;
+  position: relative;
+}
+.edu-details li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+}
+
   /* Mobile */
   .nav-desktop { display: flex; gap: 2.5rem; align-items: center; }
   .nav-mobile-btn { display: none; }
@@ -895,14 +1066,14 @@ function BlockHeading({ children }) {
   return <p className="detail-block-label">{children}</p>;
 }
 
-function ProjectBlock({ label, children }) {
-  return (
-    <div className="detail-block">
-      <BlockHeading>{label}</BlockHeading>
-      <div className="detail-block-content">{children}</div>
-    </div>
-  );
-}
+// function ProjectBlock({ label, children }) {
+//   return (
+//     <div className="detail-block">
+//       <BlockHeading>{label}</BlockHeading>
+//       <div className="detail-block-content">{children}</div>
+//     </div>
+//   );
+// }
 
 /* ── Custom hook for scroll reveal ── */
 function useScrollReveal(threshold = 0.15) {
@@ -986,9 +1157,9 @@ export default function Portfolio() {
     setMenuOpen(false);
   };
 
-  const toggleProject = (idx) => {
-    setSelectedProject(selectedProject === idx ? null : idx);
-  };
+  //   const toggleProject = (idx) => {
+  //     setSelectedProject(selectedProject === idx ? null : idx);
+  //   };
 
   return (
     <div
@@ -1315,6 +1486,33 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {/* ── EDUCATION ── */}
+      <section id="Education" className="section">
+        <div className="container">
+          <Reveal>
+            <h2 className="t-section">Education</h2>
+          </Reveal>
+          <div className="education-grid">
+            {EDUCATION.map((edu, i) => (
+              <Reveal key={i} delay={i * 100}>
+                <div className="edu-card">
+                  <div className="edu-card-header">
+                    <span className="edu-degree">{edu.degree}</span>
+                    <span className="edu-period">{edu.period}</span>
+                  </div>
+                  <p className="edu-school">{edu.school}</p>
+                  <ul className="edu-details">
+                    {edu.details.map((d, j) => (
+                      <li key={j}>{d}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* PROJECTS */}
       <section id="Projects" className="section">
         <div className="container">
@@ -1326,11 +1524,11 @@ export default function Portfolio() {
               <Reveal key={project.title} delay={idx * 80}>
                 <div
                   className={`project-card${selectedProject === idx ? " selected" : ""}`}
-                  onClick={() => toggleProject(idx)}
+                  onClick={() => setSelectedProject(idx)}
                 >
-                  {project.image && (
+                  {project.src && (
                     <img
-                      src={project.image}
+                      src={project.src}
                       alt={project.title}
                       className="project-card-img"
                     />
@@ -1389,44 +1587,87 @@ export default function Portfolio() {
                       )}
                     </div>
                     <span className="project-expand">
-                      {selectedProject === idx
-                        ? "Click to collapse ▲"
-                        : "Click for details ▼"}
+                      Click to view details
                     </span>
                   </div>
                 </div>
-
-                {selectedProject === idx && (
-                  <div className="project-detail-panel">
-                    <ProjectBlock label="Problem">
-                      {project.details.problem}
-                    </ProjectBlock>
-                    <ProjectBlock label="Approach">
-                      {project.details.approach}
-                    </ProjectBlock>
-                    <ProjectBlock label="Stack">
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "0.4rem",
-                        }}
-                      >
-                        {project.details.stack.map((s) => (
-                          <span key={s} className="skill-pill">
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </ProjectBlock>
-                    <div className="detail-impact">
-                      ✓ {project.details.impact}
-                    </div>
-                  </div>
-                )}
               </Reveal>
             ))}
           </div>
+
+          {/* Modal Popup */}
+          {selectedProject !== null && (
+            <div
+              className="modal-backdrop"
+              onClick={() => setSelectedProject(null)}
+            >
+              <div
+                className="modal-container"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  className="modal-close"
+                  onClick={() => setSelectedProject(null)}
+                >
+                  ✕
+                </button>
+                <img
+                  src={PROJECTS[selectedProject].src}
+                  alt={PROJECTS[selectedProject].title}
+                  className="modal-image"
+                />
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h2
+                      className="project-card-title"
+                      style={{ fontSize: "1.8rem" }}
+                    >
+                      {PROJECTS[selectedProject].title}
+                    </h2>
+                    <span className="tag">{PROJECTS[selectedProject].tag}</span>
+                  </div>
+                  <p className="t-body-lg">
+                    {PROJECTS[selectedProject].description}
+                  </p>
+
+                  <div className="detail-block">
+                    <BlockHeading>Problem</BlockHeading>
+                    <p className="detail-block-content">
+                      {PROJECTS[selectedProject].details.problem}
+                    </p>
+                  </div>
+
+                  <div className="detail-block">
+                    <BlockHeading>Approach</BlockHeading>
+                    <p className="detail-block-content">
+                      {PROJECTS[selectedProject].details.approach}
+                    </p>
+                  </div>
+
+                  <div className="detail-block">
+                    <BlockHeading>Stack</BlockHeading>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "0.4rem",
+                      }}
+                    >
+                      {PROJECTS[selectedProject].details.stack.map((s) => (
+                        <span key={s} className="skill-pill">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="detail-impact" style={{ marginTop: "1rem" }}>
+                    ✓ {PROJECTS[selectedProject].details.impact}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
