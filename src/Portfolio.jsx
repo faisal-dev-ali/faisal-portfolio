@@ -589,7 +589,7 @@ export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("About");
   const [openProject, setOpenProject] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   /* inject styles & fonts once */
   useEffect(() => {
