@@ -800,6 +800,25 @@ const GLOBAL_CSS = `
     .tnum { font-size: 2rem; }
     .nav-links { display: none; }
     .menu-btn { display: flex; }
+    .hero-wrap {
+    min-height: auto;
+    justify-content: flex-start;
+    padding: calc(var(--nav-h) + 1.5rem) 1.25rem 3rem;
+  }
+  
+  .hero-name {
+    font-size: clamp(3rem, 12vw, 5rem);
+    margin-bottom: 1rem;
+  }
+  
+  .hero-desc {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .scroll-hint {
+    display: none; /* hides the vertical scroll hint on mobile to save space */
+  }
   }
 `;
 
@@ -999,16 +1018,53 @@ export default function Portfolio() {
           <p className="hero-eyebrow">
             Backend Engineer · Fintech · Distributed Systems
           </p>
-          <h1 className="hero-name">
-            <span className="hline">
-              <span className="hliner">Faisal</span>
-            </span>
-            <span className="hline">
-              <span className="hliner" style={{ animationDelay: ".07s" }}>
-                <em>Ali</em>
+
+          {/* Name + image side by side */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "2.5rem",
+              flexWrap: "wrap",
+              marginBottom: "2rem",
+            }}
+          >
+            <h1 className="hero-name" style={{ marginBottom: 0, flex: 1 }}>
+              <span className="hline">
+                <span className="hliner">Faisal</span>
               </span>
-            </span>
-          </h1>
+              <span className="hline">
+                <span className="hliner" style={{ animationDelay: ".07s" }}>
+                  <em>Ali</em>
+                </span>
+              </span>
+            </h1>
+            <div
+              style={{
+                width: "clamp(160px, 22vw, 240px)",
+                height: "clamp(160px, 22vw, 240px)",
+                borderRadius: "50%",
+                overflow: "hidden",
+                border: "2px solid var(--bordermd)",
+                animation: "rise .9s var(--ease) .5s both",
+                flexShrink: 0,
+                boxShadow: "0 10px 25px -5px rgba(0,0,0,0.3)",
+              }}
+            >
+              <img
+                src="/profile2.png"
+                alt="Faisal Ali"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </div>
+          </div>
+
           <p className="hero-desc">
             Building production backend systems for payments and travel —
             focused on idempotent flows, event-driven pipelines, and
@@ -1037,31 +1093,6 @@ export default function Portfolio() {
             </span>
           </div>
           <div className="scroll-hint">scroll</div>
-          {/* Profile photo — top-right of hero */}
-          <div
-            style={{
-              position: "absolute",
-              right: "2rem",
-              top: "calc(var(--nav-h) + 3rem)",
-              width: "clamp(100px, 13vw, 156px)",
-              height: "clamp(100px, 13vw, 156px)",
-              borderRadius: "50%",
-              overflow: "hidden",
-              border: "1px solid var(--bordermd)",
-              animation: "rise .9s var(--ease) .5s both",
-            }}
-          >
-            <img
-              src="/profile2.png"
-              alt="Faisal Ali"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-          </div>
         </div>
 
         <div className="stats">
