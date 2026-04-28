@@ -16,10 +16,7 @@ function App() {
           path="/ZmFpc2FsLWFsaS1iYWNrZWQtZW5naW5lZXI="
           element={<PortfolioV2 />}
         />
-        <Route
-          path="/Y2hhbmQtYmFzaGEtcHJvZ3JhbS1tYW5hZ2Vy"
-          element={<ChandPortfolio />}
-        />
+        <Route path="/em/cpm" element={<ChandPortfolio />} />
       </Routes>
     </BrowserRouter>
   );
