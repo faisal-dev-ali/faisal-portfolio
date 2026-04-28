@@ -1026,7 +1026,7 @@ export default function Portfolio() {
               }}
             >
               <img
-                src="/profile2.png"
+                src="/ChandProfile.png"
                 alt="Chand Basha"
                 style={{
                   width: "100%",
