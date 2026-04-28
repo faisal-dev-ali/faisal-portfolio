@@ -6,9 +6,20 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/faisal" replace />} />
-        <Route path="/faisal" element={<PortfolioV2 />} />
-        <Route path="/chand" element={<ChandPortfolio />} />
+        <Route
+          path="/"
+          element={
+            <Navigate to="/ZmFpc2FsLWFsaS1iYWNrZWQtZW5naW5lZXI=" replace />
+          }
+        />
+        <Route
+          path="/ZmFpc2FsLWFsaS1iYWNrZWQtZW5naW5lZXI="
+          element={<PortfolioV2 />}
+        />
+        <Route
+          path="/Y2hhbmQtYmFzaGEtcHJvZ3JhbS1tYW5hZ2Vy"
+          element={<ChandPortfolio />}
+        />
       </Routes>
     </BrowserRouter>
   );
