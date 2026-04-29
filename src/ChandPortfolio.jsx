@@ -28,7 +28,6 @@ const SKILLS = [
     icon: "◉",
     items: [
       "Agile",
-      "SAFe",
       "Waterfall",
       "PI Planning",
       "Sprint Planning",
@@ -86,12 +85,12 @@ const SKILLS = [
 
 const EXPERIENCE = [
   {
-    role: "Lead Program Manager",
+    role: "Program Manager",
     company: "Reward360 Global Services",
     location: "Bangalore, India",
     period: "Mar 2022 – Present",
     context:
-      "Enterprise loyalty, rewards, and BFSI delivery platform — clients include ICICI Bank and Kotak Mahindra",
+      "Enterprise loyalty, rewards, and BFSI delivery platform — clients include ICICI Bank and Axis Bank",
     highlights: [
       "Directed end-to-end delivery of a multi-module loyalty platform (rewards, benefits, redemptions, travel booking, customer engagement) for 30+ cross-functional team members; executed 12+ major releases with zero schedule delays.",
       "Improved on-time delivery from 75% to 92% by optimizing sprint cadence, prioritizing backlog, and eliminating cross-team dependency bottlenecks.",
@@ -139,14 +138,8 @@ const PROJECTS = [
       problem:
         "Fragmented loyalty capabilities across siloed systems led to inconsistent user experience and delayed feature releases.",
       approach:
-        "Adopted Agile/SAFe framework with structured PI planning, cross-functional coordination, and governance dashboards to track throughput and defect density.",
-      stack: [
-        "Agile",
-        "SAFe",
-        "JIRA",
-        "Governance Dashboards",
-        "Release Management",
-      ],
+        "Adopted Agile framework with structured PI planning, cross-functional coordination, and governance dashboards to track throughput and defect density.",
+      stack: ["Agile", "JIRA", "Governance Dashboards", "Release Management"],
       impact:
         "Managed 30+ team members with zero major release delays; improved on-time delivery from 75% to 92%.",
     },
@@ -178,7 +171,7 @@ const PROJECTS = [
   {
     title: "Governance & Release Management Framework",
     tag: "Process",
-    src: "/hotel-service.png",
+    src: "/governance.png",
     description:
       "Enterprise-grade dashboards for tracking throughput, defect density, velocity, and release stability across active programs.",
     details: {
@@ -1040,7 +1033,7 @@ export default function Portfolio() {
           <p className="hero-desc">
             Program Management Leader with 11+ years delivering large-scale
             loyalty, rewards, and BFSI platforms for major banking clients —
-            spanning end-to-end program delivery, Agile/SAFe execution,
+            spanning end-to-end program delivery, Agile execution,
             cross-functional team leadership, and enterprise release governance.
           </p>
           <div className="hero-ctas">
